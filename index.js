@@ -8,13 +8,21 @@ const notion = new Client({
 
 const DATABASE_ID = process.env.DATABASE_ID;
 
-const  updateDates = (keys) => {
+const  updateDates = (done,keys) => {
   return from(
     notion.databases.query({
       database_id: DATABASE_ID,
     })
   ).pipe(
     mergeMap((response) => from(response.results)),
+    concatMap(page => from(notion.pages.update({
+      page_id: page.id,
+      properties: {
+        [done]: {
+          checkbox: false,
+        }
+      }
+    }))),
     concatMap((page) =>
       from(keys).pipe(
         filter((key) => {
@@ -51,7 +59,7 @@ const  updateDates = (keys) => {
 }
 
 // Ejecutar y manejar errores
-updateDates(['Start Date', 'End Date']).subscribe({
+updateDates('Done', ['Start Date', 'End Date']).subscribe({
   complete: () => console.log('Proceso completado'),
   error: (err) => console.error('Error:', err),
 });
