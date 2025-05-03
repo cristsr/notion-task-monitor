@@ -23,4 +23,7 @@ jobs:
         run: npm ci
         
       - name: Ejecutar tarea programada
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DATABASE_ID: ${{ secrets.DATABASE_ID }}
         run: npm run start
