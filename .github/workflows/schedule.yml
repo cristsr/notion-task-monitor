@@ -1,28 +1,28 @@
-name: Tarea diaria programada
+name: Daily Scheduled Task
 
 on:
   schedule:
-    # Se ejecuta todos los días
-    - cron: '55 22 * * *'
+    # Runs every day
+    - cron: '0 6 * * *'
     
   workflow_dispatch:
 
 jobs:
-  tarea-diaria:
+  daily-task:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout código
+      - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Configurar Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
           
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: npm ci
         
-      - name: Ejecutar tarea programada
+      - name: Run scheduled task
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DATABASE_ID: ${{ secrets.DATABASE_ID }}
