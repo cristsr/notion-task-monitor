@@ -3,7 +3,7 @@ name: Tarea diaria programada
 on:
   schedule:
     # Se ejecuta todos los días
-    - cron: '47 22 * * *'
+    - cron: '55 22 * * *'
 
 jobs:
   tarea-diaria:
