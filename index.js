@@ -42,7 +42,7 @@ const updateDates = (done, keys) => {
 
           const now = luxon.DateTime.now();
 
-          const nextDate = luxon.DateTime.now().setZone('America/Bogota').set({
+          const nextDate = luxon.DateTime.now().set({
             year: now.year,
             month: now.month,
             day: now.day,
@@ -59,6 +59,7 @@ const updateDates = (done, keys) => {
                 [key]: {
                   date: {
                     start: nextDate.toISO(),
+                    time_zone: 'America/Bogota',
                   },
                 },
               },
