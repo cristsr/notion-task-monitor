@@ -10,6 +10,8 @@ const notion = new Client({
 const DATABASE_ID = process.env.DATABASE_ID;
 
 const updateDates = (done, keys) => {
+  const timeZone = process.env.TIME_ZONE || 'America/Bogota';
+
   return from(
     notion.databases.query({
       database_id: DATABASE_ID,
@@ -35,14 +37,11 @@ const updateDates = (done, keys) => {
           return property?.type === 'date' && property.date?.start;
         }),
         concatMap((key) => {
-          const pageId = page.id;
-          const property = page.properties[key];
+          const isoDate = page.properties[key].date.start;
 
-          const prevDate = luxon.DateTime.fromISO(property.date.start).setZone(
-            'America/Bogota',
-          );
+          const prevDate = luxon.DateTime.fromISO(isoDate).setZone(timeZone);
 
-          const now = luxon.DateTime.now().setZone('America/Bogota');
+          const now = luxon.DateTime.now().setZone(timeZone);
 
           const nextDate = luxon.DateTime.now()
             .set({
@@ -53,12 +52,12 @@ const updateDates = (done, keys) => {
               minute: prevDate.minute,
               second: prevDate.second,
             })
-            .setZone('America/Bogota');
+            .setZone(timeZone);
 
           // Actualizar la página en Notion
           return from(
             notion.pages.update({
-              page_id: pageId,
+              page_id: page.id,
               properties: {
                 [key]: {
                   date: {
@@ -70,7 +69,7 @@ const updateDates = (done, keys) => {
           ).pipe(
             tap(() =>
               console.log(
-                `Actualizado: ${pageId} → ${prevDate.toISO()} ${nextDate.toISO()}`,
+                `Actualizado: ${page.id} → ${prevDate.toISO()} ${nextDate.toISO()}`,
               ),
             ),
           );
