@@ -50,6 +50,7 @@ const updateDates = (done, keys) => {
             minute: prevDate.minute,
             second: prevDate.second,
           });
+
           // Actualizar la página en Notion
           return from(
             notion.pages.update({
