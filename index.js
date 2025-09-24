@@ -40,12 +40,14 @@ const updateDates = (done, keys) => {
 
           const prevDate = luxon.DateTime.fromISO(property.date.start);
 
-          const nextDate = luxon.DateTime.now().set({
-            hour: prevDate.hour,
-            minute: prevDate.minute,
-            second: prevDate.second,
-            millisecond: prevDate.millisecond,
-          });
+          const nextDate = luxon.DateTime.now()
+            .set({
+              hour: prevDate.hour,
+              minute: prevDate.minute,
+              second: prevDate.second,
+              millisecond: prevDate.millisecond,
+            })
+            .setZone('America/Bogota');
 
           // Actualizar la página en Notion
           return from(
