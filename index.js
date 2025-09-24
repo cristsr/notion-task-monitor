@@ -57,7 +57,6 @@ const updateDates = (done, keys) => {
                 [key]: {
                   date: {
                     start: nextDate.toISO(),
-                    time_zone: 'America/Bogota',
                   },
                 },
               },
