@@ -38,18 +38,22 @@ const updateDates = (done, keys) => {
           const pageId = page.id;
           const property = page.properties[key];
 
-          const prevDate = luxon.DateTime.fromISO(property.date.start);
+          const prevDate = luxon.DateTime.fromISO(property.date.start).setZone(
+            'America/Bogota',
+          );
 
-          const now = luxon.DateTime.now();
+          const now = luxon.DateTime.now().setZone('America/Bogota');
 
-          const nextDate = luxon.DateTime.now().set({
-            year: now.year,
-            month: now.month,
-            day: now.day,
-            hour: prevDate.hour,
-            minute: prevDate.minute,
-            second: prevDate.second,
-          });
+          const nextDate = luxon.DateTime.now()
+            .set({
+              year: now.year,
+              month: now.month,
+              day: now.day,
+              hour: prevDate.hour,
+              minute: prevDate.minute,
+              second: prevDate.second,
+            })
+            .setZone('America/Bogota');
 
           // Actualizar la página en Notion
           return from(
@@ -59,7 +63,6 @@ const updateDates = (done, keys) => {
                 [key]: {
                   date: {
                     start: nextDate.toISO(),
-                    time_zone: 'America/Bogota',
                   },
                 },
               },
