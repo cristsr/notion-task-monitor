@@ -69,7 +69,9 @@ const updateDates = (done, keys) => {
             }),
           ).pipe(
             tap(() =>
-              console.log(`Actualizado: ${pageId} → ${nextDate.toISO()}`),
+              console.log(
+                `Actualizado: ${pageId} → ${prevDate.toISO()} ${nextDate.toISO()}`,
+              ),
             ),
           );
         }),
