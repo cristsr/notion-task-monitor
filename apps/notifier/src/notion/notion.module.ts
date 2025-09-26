@@ -4,6 +4,8 @@ import { NotionService } from './services/notion.service';
 import { NotionRepository } from './repositories/notion.repository';
 import { NOTION_CLIENT } from '../app/constants';
 import { Client, LogLevel } from '@notionhq/client';
+import { ConfigService } from '@nestjs/config';
+import { not } from 'rxjs/internal/util/not';
 
 @Module({
   imports: [],
@@ -13,10 +15,13 @@ import { Client, LogLevel } from '@notionhq/client';
     NotionRepository,
     {
       provide: NOTION_CLIENT,
-      useValue: new Client({
-        auth: process.env.NOTION_TOKEN,
-        logLevel: LogLevel.ERROR,
-      }),
+      useFactory: (config: ConfigService) => {
+        return new Client({
+          auth: config.get('NOTION_TOKEN'),
+          logLevel: LogLevel.ERROR,
+        });
+      },
+      inject: [ConfigService],
     },
   ],
   exports: [NotionService],

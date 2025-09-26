@@ -4,7 +4,7 @@ import { AppService } from './services/app.service';
 import { APP_PIPE } from '@nestjs/core';
 import { Cache, CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
-import { NotificationModule } from '../notifications/notification.module';
+import { NotificationModule } from '../notification/notification.module';
 import { HttpModule } from '@nestjs/axios';
 import { NotionModule } from '../notion/notion.module';
 import { AppScheduler } from './schedulers/app.scheduler';
