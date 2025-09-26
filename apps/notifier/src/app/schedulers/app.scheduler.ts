@@ -10,7 +10,7 @@ export class AppScheduler {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async notify(): Promise<void> {
-    this.logger.log('Attempting to notify!');
+    this.logger.log('Notification scheduler started');
     await this.appService.notifyTask();
   }
 }
