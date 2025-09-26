@@ -41,7 +41,8 @@ export class PushoverStrategy implements NotificationStrategy {
       )
       .subscribe({
         next: (response) => {
-          this.logger.log('Notification sent successfully', response.data);
+          this.logger.log(`Notification sent successfully`);
+          this.logger.log(`Notification request id: ${response.data.request}`);
         },
         error: (error) => {
           this.logger.error(error.response.data);

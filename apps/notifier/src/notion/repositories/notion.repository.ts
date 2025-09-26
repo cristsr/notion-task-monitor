@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cache } from '@nestjs/cache-manager';
 import { Page } from '../dto/notion.dto';
 import { DateTime } from 'luxon';
@@ -6,8 +6,6 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NotionRepository {
-  private readonly logger = new Logger(NotionRepository.name);
-
   constructor(
     private readonly cache: Cache,
     private readonly config: ConfigService,
@@ -35,8 +33,6 @@ export class NotionRepository {
       second: 0,
       millisecond: 0,
     });
-
-    this.logger.log(`Attempting to notify at ${now.toISO()}`);
 
     return pages.find((page) => {
       const startDate = DateTime.fromISO(page.startDate).setZone(zone);
