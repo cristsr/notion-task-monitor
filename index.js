@@ -41,16 +41,21 @@ const updateDates = (done, keys) => {
 
           const currentDate = luxon.DateTime.fromISO(isoDate);
 
-          const now = luxon.DateTime.local({ zone: timeZone });
+          const now = luxon.DateTime.now().setZone(timeZone);
 
-          const nextDate = luxon.DateTime.local({ zone: timeZone }).set({
-            year: now.year,
-            month: now.month,
-            day: now.day,
-            hour: currentDate.hour,
-            minute: currentDate.minute,
-            second: currentDate.second,
-          });
+          const nextDate = luxon.DateTime.fromObject(
+            {
+              year: now.year,
+              month: now.month,
+              day: now.day,
+              hour: currentDate.hour,
+              minute: currentDate.minute,
+              second: currentDate.second,
+            },
+            {
+              zone: timeZone,
+            },
+          );
 
           // Actualizar la página en Notion
           return from(
