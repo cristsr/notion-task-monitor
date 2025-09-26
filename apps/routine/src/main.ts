@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client';
-import { from, concatMap, tap, mergeMap, filter, map } from 'rxjs';
-import luxon from 'luxon';
+import { from, concatMap, tap, mergeMap, filter } from 'rxjs';
+import { DateTime } from 'luxon';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 require('dotenv').config();
 
@@ -40,18 +40,23 @@ const updateDates = (done: string, keys: string[]) => {
         concatMap((key) => {
           const isoDate = page.properties[key]['date'].start;
 
-          const currentDate = luxon.DateTime.fromISO(isoDate);
+          const currentDate = DateTime.fromISO(isoDate).setZone(timeZone);
 
-          const now = luxon.DateTime.local({ zone: timeZone });
+          const now = DateTime.now().setZone(timeZone);
 
-          const nextDate = luxon.DateTime.local({ zone: timeZone }).set({
-            year: now.year,
-            month: now.month,
-            day: now.day,
-            hour: currentDate.hour,
-            minute: currentDate.minute,
-            second: currentDate.second,
-          });
+          const nextDate = DateTime.fromObject(
+            {
+              year: now.year,
+              month: now.month,
+              day: now.day,
+              hour: currentDate.hour,
+              minute: currentDate.minute,
+              second: currentDate.second,
+            },
+            {
+              zone: timeZone,
+            },
+          );
 
           // Actualizar la página en Notion
           return from(

@@ -5,6 +5,15 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "run": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "routine:build:development",
+        "watch": false,
+        "inspect": false,
+        "runBuildTargetDependencies": true
+      }
+    },
     "build": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}"],
