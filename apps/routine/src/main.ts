@@ -9,9 +9,10 @@ const notion = new Client({
 });
 
 const DATABASE_ID = process.env.DATABASE_ID;
+const TIME_ZONE = process.env.TIME_ZONE;
 
 const updateDates = (done: string, keys: string[]) => {
-  const timeZone = process.env.TIME_ZONE || 'America/Bogota';
+  console.log(`Starting update dates`);
 
   return from(
     notion.databases.query({
@@ -40,9 +41,9 @@ const updateDates = (done: string, keys: string[]) => {
         concatMap((key) => {
           const isoDate = page.properties[key]['date'].start;
 
-          const currentDate = DateTime.fromISO(isoDate).setZone(timeZone);
+          const currentDate = DateTime.fromISO(isoDate).setZone(TIME_ZONE);
 
-          const now = DateTime.now().setZone(timeZone);
+          const now = DateTime.now().setZone(TIME_ZONE);
 
           const nextDate = DateTime.fromObject(
             {
@@ -54,7 +55,7 @@ const updateDates = (done: string, keys: string[]) => {
               second: currentDate.second,
             },
             {
-              zone: timeZone,
+              zone: TIME_ZONE,
             },
           );
 

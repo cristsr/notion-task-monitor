@@ -3,7 +3,10 @@ export abstract class NotificationStrategy {
   abstract notify(payload: Notification): Promise<void> | void;
 }
 
-export type NotificationStrategies = Map<string, NotificationStrategy>;
+export type NotificationStrategies = Map<
+  NotificationTypes,
+  NotificationStrategy
+>;
 
 export interface Notification {
   title: string;
