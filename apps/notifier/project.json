@@ -1,7 +1,7 @@
 {
-  "name": "notification",
+  "name": "notifier",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/notification/src",
+  "sourceRoot": "apps/notifier/src",
   "projectType": "application",
   "tags": [],
   "targets": {
@@ -10,7 +10,7 @@
       "options": {
         "command": "webpack-cli build",
         "args": ["--node-env=production"],
-        "cwd": "apps/notification"
+        "cwd": "apps/notifier"
       },
       "configurations": {
         "development": {
@@ -23,8 +23,8 @@
       "cache": true,
       "executor": "@nx/js:prune-lockfile",
       "outputs": [
-        "{workspaceRoot}/dist/apps/notification/package.json",
-        "{workspaceRoot}/dist/apps/notification/package-lock.json"
+        "{workspaceRoot}/dist/apps/notifier/package.json",
+        "{workspaceRoot}/dist/apps/notifier/package-lock.json"
       ],
       "options": {
         "buildTarget": "build"
@@ -33,7 +33,7 @@
     "copy-workspace-modules": {
       "dependsOn": ["build"],
       "cache": true,
-      "outputs": ["{workspaceRoot}/dist/apps/notification/workspace_modules"],
+      "outputs": ["{workspaceRoot}/dist/apps/notifier/workspace_modules"],
       "executor": "@nx/js:copy-workspace-modules",
       "options": {
         "buildTarget": "build"
@@ -49,21 +49,53 @@
       "defaultConfiguration": "development",
       "dependsOn": ["build"],
       "options": {
-        "buildTarget": "notification:build",
+        "buildTarget": "notifier:build",
         "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "notification:build:development"
+          "buildTarget": "notifier:build:development"
         },
         "production": {
-          "buildTarget": "notification:build:production"
+          "buildTarget": "notifier:build:production"
         }
       }
     },
     "test": {
       "options": {
         "passWithNoTests": true
+      }
+    },
+    "docker:build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build:production"],
+      "options": {
+        "commands": [
+          "nx build notifier --configuration production",
+          "docker build -f apps/notifier/Dockerfile -t notifier:latest ."
+        ],
+        "parallel": false
+      }
+    },
+    "docker:run": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["docker:build"],
+      "options": {
+        "commands":  [
+          "nx docker:stop notifier",
+          "docker run -d --name notion-notifier --restart always -p 3943:3943 notifier:latest"
+        ],
+        "parallel": false
+      }
+    },
+    "docker:stop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "docker stop notion-notifier 2>nul || exit /b 0",
+          "docker rm notion-notifier 2>nul || exit /b 0"
+        ],
+        "parallel": false
       }
     }
   }
