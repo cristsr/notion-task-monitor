@@ -39,7 +39,7 @@ const updateDates = (done, keys) => {
         concatMap((key) => {
           const isoDate = page.properties[key].date.start;
 
-          const currentDate = luxon.DateTime.fromISO(isoDate);
+          const currentDate = luxon.DateTime.fromISO(isoDate).setZone(timeZone);
 
           const now = luxon.DateTime.now().setZone(timeZone);
 
