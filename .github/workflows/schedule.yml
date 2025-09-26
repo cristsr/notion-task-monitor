@@ -27,4 +27,4 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DATABASE_ID: ${{ secrets.DATABASE_ID }}
           TIME_ZONE: ${{ secrets.TIME_ZONE }}
-        run: nx run routine
+        run: npx nx run routine
