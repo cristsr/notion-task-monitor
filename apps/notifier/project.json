@@ -97,6 +97,16 @@
         ],
         "parallel": false
       }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx docker:build notifier",
+          "nx docker:run notifier"
+        ],
+        "parallel": false
+      }
     }
   }
 }
