@@ -1,6 +1,7 @@
-const { Client } = require('@notionhq/client');
-const { from, concatMap, tap, mergeMap, filter } = require('rxjs');
-const luxon = require('luxon');
+import { Client } from '@notionhq/client';
+import { from, concatMap, tap, mergeMap, filter, map } from 'rxjs';
+import luxon from 'luxon';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 require('dotenv').config();
 
 const notion = new Client({
@@ -9,7 +10,7 @@ const notion = new Client({
 
 const DATABASE_ID = process.env.DATABASE_ID;
 
-const updateDates = (done, keys) => {
+const updateDates = (done: string, keys: string[]) => {
   const timeZone = process.env.TIME_ZONE || 'America/Bogota';
 
   return from(
@@ -30,14 +31,14 @@ const updateDates = (done, keys) => {
         }),
       ),
     ),
-    concatMap((page) =>
+    concatMap((page: PageObjectResponse) =>
       from(keys).pipe(
         filter((key) => {
           const property = page.properties[key];
-          return property?.type === 'date' && property.date?.start;
+          return property?.type === 'date' && !!property.date?.start;
         }),
         concatMap((key) => {
-          const isoDate = page.properties[key].date.start;
+          const isoDate = page.properties[key]['date'].start;
 
           const currentDate = luxon.DateTime.fromISO(isoDate);
 
