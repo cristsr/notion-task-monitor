@@ -16,7 +16,11 @@ export class AppService {
   ) {}
 
   async notifyTask() {
+    const zone = this.config.get('TIME_ZONE');
+    const now = DateTime.local({ zone });
     const item = await this.notionService.getNextPage();
+
+    this.logger.log(`Attempting task notification at ${now.toISO()}`);
 
     if (!item) {
       return {
@@ -24,9 +28,7 @@ export class AppService {
       };
     }
 
-    this.logger.log(`Sending notification for ${item.title}`);
-
-    const zone = this.config.get('TIME_ZONE');
+    this.logger.log(`Notification dispatched: [${item.id}] ${item.title}`);
 
     const endDate = DateTime.fromISO(item.endDate)
       .setZone(zone)
