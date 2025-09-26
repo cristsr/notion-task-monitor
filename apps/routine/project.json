@@ -8,41 +8,22 @@
     "run": {
       "executor": "@nx/js:node",
       "options": {
-        "buildTarget": "routine:build:development",
+        "buildTarget": "routine:build",
         "watch": false,
         "inspect": false,
-        "runBuildTargetDependencies": true
+        "runBuildTargetDependencies": false
       }
     },
     "build": {
-      "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
+      "executor": "nx:run-commands",
       "options": {
-        "platform": "node",
-        "outputPath": "dist/apps/routine",
-        "format": ["cjs"],
-        "bundle": false,
-        "main": "apps/routine/src/main.ts",
-        "tsConfig": "apps/routine/tsconfig.app.json",
-        "assets": ["apps/routine/src/assets"],
-        "generatePackageJson": true,
-        "esbuildOptions": {
-          "sourcemap": true,
-          "outExtension": {
-            ".js": ".js"
-          }
-        }
+        "command": "webpack-cli build",
+        "args": ["--node-env=production"],
+        "cwd": "apps/routine"
       },
       "configurations": {
-        "development": {},
-        "production": {
-          "esbuildOptions": {
-            "sourcemap": false,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
+        "development": {
+          "args": ["--node-env=development"]
         }
       }
     },

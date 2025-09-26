@@ -6,7 +6,7 @@ import { NotionService } from '../services/notion.service';
 export class NotionScheduler {
   constructor(private readonly notionService: NotionService) {}
 
-  @Cron('0 6 * * *')
+  @Cron('0 7 * * *')
   getData() {
     this.notionService.getDatabaseItems().subscribe({});
   }
