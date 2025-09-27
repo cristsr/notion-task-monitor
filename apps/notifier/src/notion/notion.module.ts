@@ -14,6 +14,7 @@ import { not } from 'rxjs/internal/util/not';
   providers: [
     NotionService,
     NotionRepository,
+    NotionScheduler,
     {
       provide: NOTION_CLIENT,
       useFactory: (config: ConfigService) => {
