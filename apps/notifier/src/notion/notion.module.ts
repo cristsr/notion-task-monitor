@@ -3,10 +3,9 @@ import { NotionController } from './controllers/notion.controller';
 import { NotionService } from './services/notion.service';
 import { NotionScheduler } from './schedulers/notion.scheduler';
 import { NotionRepository } from './repositories/notion.repository';
-import { NOTION_CLIENT } from '../app/constants';
 import { Client, LogLevel } from '@notionhq/client';
 import { ConfigService } from '@nestjs/config';
-import { not } from 'rxjs/internal/util/not';
+import { NOTION_CLIENT } from './constants';
 
 @Module({
   imports: [],
