@@ -15,10 +15,4 @@ export class NotificationService {
     const strategy = this.strategies.get(NotificationTypes.PUSHOVER);
     strategy.notify(payload);
   }
-
-  getData(): { message: string } {
-    return {
-      message: 'Hello API',
-    };
-  }
 }

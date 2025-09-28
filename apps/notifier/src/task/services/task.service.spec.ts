@@ -1,15 +1,15 @@
 import { Test } from '@nestjs/testing';
-import { AppScheduler } from './app.scheduler';
+import { TaskService } from './task.service';
 
-describe('AppScheduler', () => {
-  let service: AppScheduler;
+describe('TaskService', () => {
+  let service: TaskService;
 
   beforeAll(async () => {
     const app = await Test.createTestingModule({
-      providers: [AppScheduler],
+      providers: [TaskService],
     }).compile();
 
-    service = app.get<AppScheduler>(AppScheduler);
+    service = app.get<TaskService>(TaskService);
   });
 
   describe('getData', () => {

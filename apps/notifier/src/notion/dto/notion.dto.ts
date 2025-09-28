@@ -1,13 +1,3 @@
-export class Notification {
-  title: string;
-
-  message: string;
-
-  url: string;
-
-  urlTitle: string;
-}
-
 export class Page {
   id: string;
   title: string;

@@ -11,7 +11,7 @@ export class NotificationsController {
     this.appService.sendNotification(data);
 
     return {
-      success: true,
+      accepted: true,
     };
   }
 }

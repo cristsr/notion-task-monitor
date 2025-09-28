@@ -8,6 +8,6 @@ export class NotionScheduler {
 
   @Cron('0 7 * * *')
   getData() {
-    this.notionService.getDatabaseItems().subscribe({});
+    this.notionService.fetchPages();
   }
 }

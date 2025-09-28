@@ -6,8 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import dedent from 'dedent';
 
 @Injectable()
-export class AppService {
-  private logger = new Logger(AppService.name);
+export class TaskService {
+  private logger = new Logger(TaskService.name);
 
   constructor(
     private readonly notionService: NotionService,
