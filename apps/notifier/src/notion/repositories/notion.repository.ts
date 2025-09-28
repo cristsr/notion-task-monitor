@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Cache } from '@nestjs/cache-manager';
 import { Page } from '../dto/notion.dto';
 import { DateTime } from 'luxon';
@@ -20,7 +20,7 @@ export class NotionRepository {
     return !pages?.length ? [] : pages;
   }
 
-  async getNextItem() {
+  async getNextPage(): Promise<Page> {
     const pages = await this.getPages();
 
     if (!pages?.length) {
@@ -47,5 +47,15 @@ export class NotionRepository {
 
       return now.toISO() === dateMinusFive.toISO();
     });
+  }
+
+  async getNextPageOrFail() {
+    const page = await this.getNextPage();
+
+    if (!page) {
+      throw new NotFoundException(`Page not available`);
+    }
+
+    return page;
   }
 }

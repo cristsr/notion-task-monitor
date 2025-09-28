@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AppService } from '../services/app.service';
+import { TaskService } from '../services/task.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
-export class AppScheduler {
-  private readonly logger = new Logger(AppScheduler.name);
+export class TaskScheduler {
+  private readonly logger = new Logger(TaskScheduler.name);
 
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: TaskService) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
   async notify(): Promise<void> {

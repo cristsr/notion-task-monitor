@@ -1,14 +1,12 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { AppController } from './controllers/app.controller';
-import { AppService } from './services/app.service';
 import { APP_PIPE } from '@nestjs/core';
 import { Cache, CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
-import { NotificationModule } from '../notification/notification.module';
 import { HttpModule } from '@nestjs/axios';
-import { NotionModule } from '../notion/notion.module';
-import { AppScheduler } from './schedulers/app.scheduler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationModule } from './notification/notification.module';
+import { NotionModule } from './notion/notion.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -22,13 +20,11 @@ import { ScheduleModule } from '@nestjs/schedule';
       global: true,
     }),
     ScheduleModule.forRoot(),
+    TaskModule,
     NotificationModule,
     NotionModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
-    AppScheduler,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
