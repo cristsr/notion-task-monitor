@@ -9,7 +9,7 @@ export class TaskController {
 
   @Get('notify')
   notifyTask() {
-    this.logger.log('Attempting to notify task');
+    this.logger.log('~task/notify Attempting to notify task');
     return this.appService.notifyTask();
   }
 }
