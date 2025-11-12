@@ -51,12 +51,10 @@ export class DiscordStrategy implements NotificationStrategy {
         .setTimestamp()
         .setAuthor({
           name: 'Notifier',
-          iconURL: thumbnail,
         })
         .setThumbnail(thumbnail)
         .setFooter({
           text: `Notifier`,
-          iconURL: thumbnail,
         })
         .setTimestamp();
 
