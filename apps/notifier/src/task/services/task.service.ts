@@ -41,7 +41,7 @@ export class TaskService {
     const message = dedent`
        •
        🔔 Se ha asignado una nueva tarea
-       📅 Fecha de entrega: ${endDate}
+       ⏲ Hora de finalizacion: ${endDate}
     `;
 
     this.notificationService.sendNotification({
