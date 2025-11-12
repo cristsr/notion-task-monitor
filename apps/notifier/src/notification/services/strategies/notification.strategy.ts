@@ -18,4 +18,5 @@ export interface Notification {
 
 export enum NotificationTypes {
   PUSHOVER = 'PUSHOVER',
+  DISCORD = 'DISCORD',
 }

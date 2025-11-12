@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { NOTIFICATION_STRATEGIES } from '../constants';
-import { NotificationStrategies, NotificationTypes } from './strategies';
+import { NotificationStrategies } from './strategies';
 import { Notification } from '../dto/notification.dto';
 
 @Injectable()
@@ -11,8 +11,12 @@ export class NotificationService {
   ) {}
 
   sendNotification(payload: Notification): void {
-    // By default, use pushover, maybe can be an env var
-    const strategy = this.strategies.get(NotificationTypes.PUSHOVER);
+    const strategy = this.strategies.get(payload.provider);
+    if (!strategy) {
+      throw new NotFoundException(
+        `Notifier provider not found: ${payload.provider}`,
+      );
+    }
     strategy.notify(payload);
   }
 }
