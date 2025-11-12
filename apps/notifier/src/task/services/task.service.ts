@@ -17,6 +17,7 @@ export class TaskService {
 
   async notifyTask() {
     const zone = this.config.get('TIME_ZONE');
+    const notificationProvider = this.config.get('NOTIFICATION_PROVIDER');
     const now = DateTime.local({ zone });
     const item = await this.notionService.getNextPage();
 
@@ -38,10 +39,9 @@ export class TaskService {
       });
 
     const message = dedent`
-      🚨 ¡NUEVA MISIÓN ASIGNADA! 🚨
-      🌱 Recuerda avanzar sin prisa pero sin pausa.
-      ⏰ Deadline: ${endDate}
-      🎯 ¡Es hora de brillar!
+       •
+       🔔 Se ha asignado una nueva tarea
+       📅 Fecha de entrega: ${endDate}
     `;
 
     this.notificationService.sendNotification({
@@ -50,6 +50,7 @@ export class TaskService {
       url: item.url,
       urlTitle: '📝 Revisar en Notion',
       ttl: 60 * 60 * 12,
+      provider: notificationProvider,
     });
 
     return {
