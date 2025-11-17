@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Client } from '@notionhq/client';
 import { ConfigService } from '@nestjs/config';
-import { from, map, switchMap, toArray } from 'rxjs';
+import { filter, from, map, retry, switchMap, toArray } from 'rxjs';
 import { NotionRepository } from '../repositories/notion.repository';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Page } from '../dto/notion.dto';
+import { isValidNotionPage, Page } from '../dto/notion.dto';
 import { NOTION_CLIENT } from '../constants';
 
 @Injectable()
@@ -31,22 +31,12 @@ export class NotionService implements OnModuleInit {
       }),
     )
       .pipe(
+        retry(3),
         switchMap((res) => from(res.results)),
-        map(
-          (page: PageObjectResponse) =>
-            new Page({
-              id: page.id,
-              title: page.properties['Habits']['title'][0].plain_text,
-              startDate: page.properties['Start Date']['date'].start,
-              endDate: page.properties['End Date']['date'].start,
-              done: page.properties['Done']['checkbox'],
-              url: page.url,
-            }),
-        ),
+        filter((page: PageObjectResponse) => isValidNotionPage(page)),
+        map((page: PageObjectResponse) => Page.fromNotionPage(page)),
         toArray(),
-        map((items) =>
-          items.sort((a, b) => a.startDate.localeCompare(b.startDate)),
-        ),
+        map((items) => items.toSorted((a, b) => a.compare(b))),
       )
       .subscribe({
         next: (items) => {
