@@ -9,7 +9,7 @@ import { NOTION_CLIENT } from '../constants';
 
 @Injectable()
 export class NotionService implements OnModuleInit {
-  private logger = new Logger('NotionService');
+  private readonly logger = new Logger('NotionService');
 
   constructor(
     @Inject(NOTION_CLIENT)

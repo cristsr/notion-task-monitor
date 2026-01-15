@@ -1,17 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  NotificationStrategy,
-  Notification,
-  NotificationTypes,
-} from './notification.strategy';
 import { ConfigService } from '@nestjs/config';
 import { Client, TextChannel, EmbedBuilder } from 'discord.js';
+import { NotifierServicePort } from '../../../../application/ports/output';
+import { NotifierTypes } from '../../../../application/types';
 
 @Injectable()
-export class DiscordStrategy implements NotificationStrategy {
-  private readonly logger = new Logger(DiscordStrategy.name);
-
-  public readonly instance = NotificationTypes.DISCORD;
+export class DiscordNotifierService implements NotifierServicePort {
+  readonly instance = NotifierTypes.DISCORD;
+  private readonly logger = new Logger(DiscordNotifierService.name);
 
   constructor(
     private readonly config: ConfigService,
@@ -22,7 +18,7 @@ export class DiscordStrategy implements NotificationStrategy {
    * Notify to discord
    * @param payload
    */
-  async notify(payload: Notification): Promise<void> {
+  async notify(payload: any): Promise<void> {
     if (!this.client.isReady()) {
       this.logger.warn('Discord bot is not ready yet');
       return;

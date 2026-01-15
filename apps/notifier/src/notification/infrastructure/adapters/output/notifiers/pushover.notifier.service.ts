@@ -1,16 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  NotificationStrategy,
-  Notification,
-  NotificationTypes,
-} from './notification.strategy';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { NotifierServicePort } from '../../../../application/ports/output';
+import { NotifierTypes } from '../../../../application/types';
 
 @Injectable()
-export class PushoverStrategy implements NotificationStrategy {
-  private readonly logger = new Logger(PushoverStrategy.name);
-  public readonly instance = NotificationTypes.PUSHOVER;
+export class PushoverNotifierService implements NotifierServicePort {
+  readonly instance = NotifierTypes.PUSHOVER;
+  private readonly logger = new Logger(PushoverNotifierService.name);
 
   constructor(
     private readonly config: ConfigService,
@@ -21,7 +18,7 @@ export class PushoverStrategy implements NotificationStrategy {
    * Notify
    * @param payload
    */
-  notify(payload: Notification): void {
+  notify(payload: any): void {
     const url = this.config.get('PUSHOVER_URL') + '/1/messages.json';
     const token = this.config.get('PUSHOVER_API_KEY');
     const user = this.config.get('PUSHOVER_API_USER');

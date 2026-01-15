@@ -14,7 +14,7 @@ describe('NotionService', () => {
 
   describe('getData', () => {
     it('should return "Hello API"', () => {
-      expect(service.getData()).toEqual({ message: 'Hello API' });
+      expect(service.onModuleInit()).toEqual({ message: 'Hello API' });
     });
   });
 });

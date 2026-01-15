@@ -1,5 +1,3 @@
-import { NotificationTypes } from '../services/strategies';
-
 export class Notification {
   title: string;
 
@@ -10,6 +8,4 @@ export class Notification {
   urlTitle: string;
 
   ttl: number;
-
-  provider: NotificationTypes;
 }

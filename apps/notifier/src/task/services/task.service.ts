@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { NotionService } from '../../notion/services/notion.service';
-import { NotificationService } from '../../notification/services/notification.service';
 import { DateTime } from 'luxon';
 import { ConfigService } from '@nestjs/config';
 import dedent from 'dedent';
+import { NotificationService } from '../../notification/application/services';
 
 @Injectable()
 export class TaskService {
