@@ -8,4 +8,8 @@ export class Notification {
   urlTitle: string;
 
   ttl: number;
+
+  private constructor(payload: Partial<Notification>) {
+    Object.assign(this, payload);
+  }
 }

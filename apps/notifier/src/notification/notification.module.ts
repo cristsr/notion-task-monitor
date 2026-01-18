@@ -1,47 +1,40 @@
-import { Module, ValidationPipe } from '@nestjs/common';
-
-import { APP_PIPE } from '@nestjs/core';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Client as DiscordClient } from 'discord.js';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { discordClientFactory } from './infrastructure/factories';
-import { notifierProviderFactory } from './infrastructure/factories/notifier-provider.factory';
 import {
   DiscordNotifierService,
   PushoverNotifierService,
-} from './infrastructure/adapters/output';
-import { NotificationsController } from './infrastructure/adapters/input';
-import { NOTIFIERS } from './application/ports/output';
-import { NotificationService } from './application/services';
+  NotificationsController,
+} from './infrastructure/adapters';
+import { SendNotificationUsecase } from './application/usecases';
+import {
+  DiscordClient,
+  DiscordClientFactory,
+} from './infrastructure/config/discord';
+import { NotifierFactory } from './infrastructure/config/notifier';
+import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
 
 @Module({
   imports: [],
   controllers: [NotificationsController],
   providers: [
-    NotificationService,
+    SendNotificationUsecase,
     DiscordNotifierService,
     PushoverNotifierService,
     {
-      provide: APP_PIPE,
-      useValue: new ValidationPipe({
-        transform: true,
-      }),
-    },
-    {
-      provide: Cache,
-      useExisting: CACHE_MANAGER,
-    },
-    {
       provide: NOTIFIERS,
-      useFactory: notifierProviderFactory(),
+      useFactory: NotifierFactory.createNotifiers(),
       inject: [DiscordNotifierService, PushoverNotifierService],
     },
     {
+      provide: SendNotificationUsecasePort,
+      useClass: SendNotificationUsecase,
+    },
+    {
       provide: DiscordClient,
-      useFactory: discordClientFactory(),
+      useFactory: DiscordClientFactory.getClient(),
       inject: [ConfigService],
     },
   ],
-  exports: [NotificationService],
+  exports: [SendNotificationUsecase],
 })
 export class NotificationModule {}

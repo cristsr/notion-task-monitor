@@ -10,6 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@lokidb/fs-storage": "^2.1.0",
+    "@lokidb/loki": "^2.1.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.0",
@@ -28,7 +30,8 @@
     "express": "^4.21.2",
     "luxon": "^3.7.2",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
