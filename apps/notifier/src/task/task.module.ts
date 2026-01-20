@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-import { NotionModule } from '../notion/notion.module';
 import { NotificationModule } from '../notification/notification.module';
-import { LokidbConnection } from '../shared/infrastructure/config/lokidb';
 import {
-  LokidbTaskCollection,
   LokidbTaskRepository,
-} from './infrastructure/adapters/persistence/lokidb';
+  LokidbTaskEntityProvider,
+} from './infrastructure/adapters/persistence/lokidb/task';
 import { TaskController } from './infrastructure/adapters/http';
 import { TaskScheduler } from './infrastructure/adapters/schedulers';
 import { NotionTaskService } from './infrastructure/adapters/notion';
@@ -15,6 +13,7 @@ import {
   SyncTaskUsecase,
 } from './application/usecases';
 import {
+  NotifyTaskUseCasePort,
   NotionTaskServicePort,
   RetrieveTaskUsecasePort,
   SyncTaskUsecasePort,
@@ -22,11 +21,15 @@ import {
 import { TaskRepository } from './domain';
 
 @Module({
-  imports: [NotificationModule, NotionModule],
+  imports: [NotificationModule],
   controllers: [TaskController],
   providers: [
-    NotifyTaskUsecase,
     TaskScheduler,
+    LokidbTaskEntityProvider,
+    {
+      provide: NotifyTaskUseCasePort,
+      useClass: NotifyTaskUsecase,
+    },
     {
       provide: RetrieveTaskUsecasePort,
       useClass: RetrieveTaskUsecase,
@@ -42,11 +45,6 @@ import { TaskRepository } from './domain';
     {
       provide: TaskRepository,
       useClass: LokidbTaskRepository,
-    },
-    {
-      provide: LokidbTaskCollection,
-      useFactory: (conn: LokidbConnection) => conn.addCollection('tasks'),
-      inject: [LokidbConnection],
     },
   ],
 })

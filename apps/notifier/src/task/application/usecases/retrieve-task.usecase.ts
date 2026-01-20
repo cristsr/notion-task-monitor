@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { NotionTaskServicePort, RetrieveTaskUsecasePort } from '../ports';
 import { TaskMapper } from '../mappers';
 import { TaskOutput } from '../dto';
-import { TaskRepository } from '../../domain/task.repository';
+import { TaskRepository } from '../../domain';
 
 @Injectable()
 export class RetrieveTaskUsecase implements RetrieveTaskUsecasePort {

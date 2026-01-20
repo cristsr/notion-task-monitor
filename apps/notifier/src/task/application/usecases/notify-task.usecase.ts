@@ -1,61 +1,72 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NotionService } from '../../../notion/services/notion.service';
 import { DateTime } from 'luxon';
-import { ConfigService } from '@nestjs/config';
 import dedent from 'dedent';
 import { SendNotificationUsecase } from '../../../notification/application/usecases';
+import { NotificationStage, TaskRepository } from '../../domain';
+import { NotifierTypes } from '../../../notification/application/types';
+import { NotifyTaskUseCasePort } from '../ports';
 
 @Injectable()
-export class NotifyTaskUsecase {
+export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
   private readonly logger = new Logger(NotifyTaskUsecase.name);
 
   constructor(
-    private readonly notionService: NotionService,
+    private readonly taskRepository: TaskRepository,
     private readonly notificationService: SendNotificationUsecase,
-    private readonly config: ConfigService,
   ) {}
 
-  async notifyTask() {
-    const zone = this.config.get('TIME_ZONE');
-    const notificationProvider = this.config.get('NOTIFICATION_PROVIDER');
+  async execute(): Promise<void> {
+    const now = DateTime.local();
 
-    const now = DateTime.local({ zone });
-    const item = await this.notionService.getNextPage();
+    this.logger.log(`Checking tasks for notification at ${now.toISO()}`);
 
-    this.logger.log(`Attempting task notification at ${now.toISO()}`);
+    const tasks = await this.taskRepository.getAllTask();
 
-    if (!item) {
-      return {
-        success: false,
-      };
-    }
+    for (const task of tasks) {
+      if (!task.shouldNotify()) {
+        continue;
+      }
 
-    this.logger.log(`Notification dispatched: [${item.id}] ${item.title}`);
-
-    const endDate = DateTime.fromISO(item.endDate)
-      .setZone(zone)
-      .toLocaleString({
+      const endDate = task.date.toLocaleString({
         hour: 'numeric',
         minute: 'numeric',
       });
 
-    const message = dedent`
-       •
-       🔔 Se ha asignado una nueva tarea
-       ⏲ Hora de finalizacion: ${endDate}
-    `;
+      const stageLabel = this.getStageLabel(task.getNotificationStage());
 
-    this.notificationService.execute({
-      message,
-      title: item.title,
-      url: item.url,
-      urlTitle: '📝 Revisar en Notion',
-      ttl: 60 * 60 * 12,
-      provider: notificationProvider,
-    });
+      const message = dedent`
+         •
+         🔔 ${stageLabel}
+         ⏲ Hora de finalizacion: ${endDate}
+      `;
 
-    return {
-      success: true,
+      this.notificationService.execute({
+        message,
+        title: task.title,
+        url: '',
+        urlTitle: '📝 Revisar tarea',
+        ttl: 60 * 60 * 12,
+        provider: NotifierTypes.DISCORD,
+      });
+
+      task.notify();
+
+      this.logger.log(
+        `Notification sent for task [${task.id.value}] ${task.title} - Stage: ${task.getNotificationStage()}`,
+      );
+
+      await this.taskRepository.save(task);
+    }
+  }
+
+  private getStageLabel(stage: NotificationStage): string {
+    const mapper = {
+      BEFORE_24_HOURS: 'Recordatorio: Tarea en 24 horas',
+      BEFORE_1_HOUR: 'Recordatorio: Tarea en 2 horas',
+      BEFORE_15_MINUTES: 'Recordatorio: Tarea en 15 minutos',
+      AFTER_NOW: 'Alerta: Tarea vencida',
     };
+
+    return mapper[stage];
   }
 }

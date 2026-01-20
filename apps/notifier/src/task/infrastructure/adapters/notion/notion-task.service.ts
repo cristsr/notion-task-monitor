@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { NotionTaskServicePort } from '../../../application/ports';
 import { NotionClient } from '../../../../shared/infrastructure/config/notion';
 import { ConfigService } from '@nestjs/config';
 import {
+  catchError,
   defer,
   EMPTY,
   expand,
@@ -10,6 +11,7 @@ import {
   lastValueFrom,
   map,
   reduce,
+  retry,
   takeWhile,
 } from 'rxjs';
 import { NotionTaskMapper } from './notion-task.mapper';
@@ -17,6 +19,7 @@ import { Task } from '../../../domain';
 
 @Injectable()
 export class NotionTaskService implements NotionTaskServicePort {
+  private readonly logger = new Logger(NotionTaskService.name);
   constructor(
     private readonly notionClient: NotionClient,
     private readonly config: ConfigService,
@@ -49,16 +52,35 @@ export class NotionTaskService implements NotionTaskServicePort {
                 equals: 'Not started',
               },
             },
+            {
+              property: '📅 Date',
+              date: {
+                is_not_empty: true,
+              },
+            },
           ],
         },
         start_cursor: cursor,
       }),
     ).pipe(
+      retry({
+        count: 3,
+        delay: 1000,
+        resetOnSuccess: true,
+      }),
       map((response) => ({
         cursor: response.next_cursor,
         hasMore: response.has_more,
         results: response.results,
       })),
+      catchError((err) => {
+        this.logger.warn('Failed to retrieve tasks from notion', {
+          cursor,
+          message: err.message,
+        });
+
+        return EMPTY;
+      }),
     );
   }
 }

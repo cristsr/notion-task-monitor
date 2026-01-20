@@ -1,20 +1,23 @@
 import { Task } from '../../../domain';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Uuid } from '../../../../shared/domain/value-objects';
+import { DateTime } from 'luxon';
 
 export class NotionTaskMapper {
-  static toDomain(notionTask: PageObjectResponse): Task {
+  static toDomain(input: PageObjectResponse): Task {
+    //prettier-ignore
     return Task.create({
-      id: Uuid.create(notionTask.id),
-      title: notionTask.properties.Name['title'][0].plain_text,
-      status: notionTask.properties['📊 Status']['status'].name,
-      assignedTo: '',
-      createdAt: undefined,
-      createdBy: '',
-      date: undefined,
-      notified: false,
-      priority: undefined,
-      type: undefined,
+      id: Uuid.create(input.id),
+      title: input.properties.Name['title'][0].text.content,
+      status: input.properties['📊 Status']['status'].name,
+      assignedTo: input.properties['👦 Assigned To']['people'][0].person.email,
+      createdAt: DateTime.fromISO(input.properties['📅 Created At']['created_time']),
+      createdBy: input.properties['👮‍♀️ Created By']['created_by'].person.email,
+      date: DateTime.fromISO(input.properties['📅 Date']['date'].start),
+      priority: input.properties['🚨 Priority']['select'].name,
+      type: input.properties['📋 Type']['select'].name,
+      notificationStages: [],
+      notifiedAt: null
     });
   }
 }

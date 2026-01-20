@@ -1,5 +1,11 @@
-import { TaskPriority, TaskStatus, TaskType } from '../../domain';
-import { IsDate, IsIn, IsString, IsUUID } from 'class-validator';
+import {
+  NotificationStage,
+  TaskPriority,
+  TaskStatus,
+  TaskType,
+} from '../../domain';
+import { IsDateString, IsIn, IsString, IsUUID } from 'class-validator';
+import { Optional } from '@nestjs/common';
 
 export class TaskOutput {
   @IsUUID('4')
@@ -8,19 +14,17 @@ export class TaskOutput {
   @IsString()
   title: string;
 
-  @IsDate()
-  date: Date;
+  @IsDateString()
+  date: string;
 
   @IsString()
   assignedTo: string;
 
-  @IsDate()
-  createdAt: Date;
+  @IsDateString()
+  createdAt: string;
 
   @IsString()
   createdBy: string;
-
-  notified: boolean;
 
   @IsString()
   @IsIn(Object.values(TaskPriority))
@@ -34,7 +38,14 @@ export class TaskOutput {
   @IsIn(Object.values(TaskType))
   type: TaskType;
 
-  constructor(payload: Partial<TaskOutput>) {
+  @IsIn(Object.values(NotificationStage), { each: true })
+  notificationStages: NotificationStage[];
+
+  @IsDateString()
+  @Optional()
+  notifiedAt?: string;
+
+  constructor(payload: TaskOutput) {
     Object.assign(this, payload);
   }
 }

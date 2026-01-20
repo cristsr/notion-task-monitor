@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationModule } from './notification/notification.module';
-import { NotionModule } from './notion/notion.module';
 import { TaskModule } from './task/task.module';
 import { SharedModule } from './shared/shared.module';
 
@@ -25,7 +24,6 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
     TaskModule,
     NotificationModule,
-    NotionModule,
   ],
   providers: [
     {

@@ -1,3 +1,3 @@
 export abstract class NotifyTaskUseCasePort {
-  abstract execute(taskId: string): Promise<void>;
+  abstract execute(): Promise<void>;
 }

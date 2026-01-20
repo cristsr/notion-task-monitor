@@ -1,3 +1,3 @@
-export * from './task.entity';
-export * from './task.enum';
-export * from './task.repository';
+export * from './task/task.entity';
+export * from './task/task.enum';
+export * from './task/task.repository';

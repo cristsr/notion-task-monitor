@@ -11,6 +11,10 @@ export class Uuid {
     return new Uuid(value);
   }
 
+  static generate(): Uuid {
+    return new Uuid(crypto.randomUUID());
+  }
+
   equals(other: Uuid): boolean {
     return this.value === other.value;
   }
