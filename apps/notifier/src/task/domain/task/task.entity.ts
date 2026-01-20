@@ -36,7 +36,7 @@ export class Task {
   }
 
   static create(payload: PropertiesOnly<Task>): Task {
-    return Object.assign(new Task(), payload);
+    return new Task(payload);
   }
 
   equals(other: Task): boolean {
@@ -75,13 +75,13 @@ export class Task {
       return !this.notificationStages.includes(NotificationStage.BEFORE_1_HOUR);
     }
 
-    if (diff.hours < 24) {
+    if (diff.as('hours') < 24) {
       return !this.notificationStages.includes(
         NotificationStage.BEFORE_24_HOURS,
       );
     }
 
-    return true;
+    return false;
   }
 
   getNotificationStage(): NotificationStage {
