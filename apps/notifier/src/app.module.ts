@@ -30,6 +30,7 @@ import { SharedModule } from './shared/shared.module';
       provide: APP_PIPE,
       useValue: new ValidationPipe({
         transform: true,
+        always: true,
       }),
     },
   ],

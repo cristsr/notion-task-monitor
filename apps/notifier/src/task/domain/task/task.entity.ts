@@ -43,8 +43,6 @@ export class Task {
     const conditions = [
       this.id.equals(other.id),
       this.date.equals(other.date),
-      this.title === other.title,
-      this.priority === other.priority,
       this.type === other.type,
     ];
 
