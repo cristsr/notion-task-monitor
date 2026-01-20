@@ -33,11 +33,9 @@ export class SyncTaskUsecase implements SyncTaskUsecasePort {
     for (const task of tasks) {
       const existingTask = await this.taskRepository.findById(task.id.value);
 
-      if (task.equals(existingTask)) {
-        continue;
+      if (!existingTask || !task.equals(existingTask)) {
+        await this.taskRepository.save(task);
       }
-
-      await this.taskRepository.save(task);
     }
   }
 }

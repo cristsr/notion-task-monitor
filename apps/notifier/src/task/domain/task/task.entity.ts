@@ -29,7 +29,7 @@ export class Task {
 
   notificationStages: NotificationStage[];
 
-  notifiedAt?: DateTime;
+  notifiedAt: DateTime | null;
 
   private constructor(payload?: Partial<Task>) {
     Object.assign(this, payload);
@@ -108,10 +108,5 @@ export class Task {
     const stage = this.getNotificationStage();
     this.notificationStages.push(stage);
     this.notifiedAt = DateTime.local();
-  }
-
-  resetNotification() {
-    this.notificationStages = [];
-    this.notifiedAt = null;
   }
 }

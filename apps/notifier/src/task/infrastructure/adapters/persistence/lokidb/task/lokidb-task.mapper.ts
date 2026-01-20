@@ -21,7 +21,7 @@ export class LokidbTaskMapper {
   }
 
   static toDomain(task: LokidbTaskEntity): Task {
-    return Task.create({
+    const payload: Partial<Task> = {
       id: Uuid.create(task.id),
       date: DateTime.fromISO(task.date),
       title: task.title,
@@ -32,7 +32,12 @@ export class LokidbTaskMapper {
       createdAt: DateTime.fromISO(task.createdAt),
       createdBy: task.createdBy,
       notificationStages: task.notificationStages as NotificationStage[],
-      notifiedAt: DateTime.fromISO(task.notifiedAt),
-    });
+    };
+
+    if (task.notifiedAt) {
+      payload.notifiedAt = DateTime.fromISO(task.notifiedAt);
+    }
+
+    return Task.create(payload as Task);
   }
 }
