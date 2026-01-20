@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY dist/apps/notifier .
 
-COPY apps/notifier/.env.docker .env
+#COPY apps/notifier/.env.docker .env
 
 # You can remove this install step if you build with `--bundle` option.
 # The bundled output will include external dependencies.
