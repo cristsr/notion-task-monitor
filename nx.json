@@ -23,7 +23,8 @@
       "exclude": [
         "apps/routine-e2e/**/*",
         "apps/notification-e2e/**/*",
-        "apps/api-e2e/**/*"
+        "apps/api-e2e/**/*",
+        "apps/task-e2e/**/*"
       ]
     },
     {

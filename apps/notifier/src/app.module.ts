@@ -1,13 +1,14 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Global, Module, ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
-import { Cache, CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationModule } from './notification/notification.module';
-import { NotionModule } from './notion/notion.module';
 import { TaskModule } from './task/task.module';
+import { SharedModule } from './shared/shared.module';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,9 +21,9 @@ import { TaskModule } from './task/task.module';
       global: true,
     }),
     ScheduleModule.forRoot(),
+    SharedModule,
     TaskModule,
     NotificationModule,
-    NotionModule,
   ],
   providers: [
     {
@@ -31,10 +32,7 @@ import { TaskModule } from './task/task.module';
         transform: true,
       }),
     },
-    {
-      provide: Cache,
-      useExisting: CACHE_MANAGER,
-    },
   ],
+  exports: [],
 })
 export class AppModule {}

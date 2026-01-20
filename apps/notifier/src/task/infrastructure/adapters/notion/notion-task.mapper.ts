@@ -1,0 +1,29 @@
+import { Task, TaskType } from '../../../domain';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { Uuid } from '../../../../shared/domain/value-objects';
+import { DateTime } from 'luxon';
+
+export class NotionTaskMapper {
+  static toDomain(input: PageObjectResponse): Task {
+    const typeMap: Record<string, TaskType> = {
+      Normal: TaskType.NORMAL,
+      Scheduled: TaskType.SCHEDULED,
+      Recurrent: TaskType.RECURRENT,
+    };
+
+    //prettier-ignore
+    return Task.create({
+      id: Uuid.create(input.id),
+      title: input.properties.Name['title'][0].text.content,
+      status: input.properties['📊 Status']['status'].name,
+      assignedTo: input.properties['👦 Assigned To']['people'][0].person.email,
+      createdAt: DateTime.fromISO(input.properties['📅 Created At']['created_time']),
+      createdBy: input.properties['👮‍♀️ Created By']['created_by'].person.email,
+      date: DateTime.fromISO(input.properties['📅 Date']['date'].start),
+      priority: input.properties['🚨 Priority']['select'].name,
+      type: typeMap[input.properties['📋 Type']['select'].name],
+      notificationStages: [],
+      notifiedAt: null,
+    });
+  }
+}

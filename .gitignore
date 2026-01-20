@@ -11,3 +11,4 @@ node_modules
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 dist
+loki.db
