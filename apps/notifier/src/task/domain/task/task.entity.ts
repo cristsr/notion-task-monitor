@@ -36,15 +36,13 @@ export class Task {
   }
 
   static create(payload: PropertiesOnly<Task>): Task {
-    return Object.assign(new Task(), payload);
+    return new Task(payload);
   }
 
   equals(other: Task): boolean {
     const conditions = [
       this.id.equals(other.id),
       this.date.equals(other.date),
-      this.title === other.title,
-      this.priority === other.priority,
       this.type === other.type,
     ];
 
@@ -77,13 +75,13 @@ export class Task {
       return !this.notificationStages.includes(NotificationStage.BEFORE_1_HOUR);
     }
 
-    if (diff.hours < 24) {
+    if (diff.as('hours') < 24) {
       return !this.notificationStages.includes(
         NotificationStage.BEFORE_24_HOURS,
       );
     }
 
-    return true;
+    return false;
   }
 
   getNotificationStage(): NotificationStage {

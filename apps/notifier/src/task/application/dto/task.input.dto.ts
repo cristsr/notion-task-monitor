@@ -1,5 +1,10 @@
-import { TaskPriority, TaskStatus, TaskType } from '../../domain';
-import { IsDate, IsIn, IsString, IsUUID } from 'class-validator';
+import {
+  NotificationStage,
+  TaskPriority,
+  TaskStatus,
+  TaskType,
+} from '../../domain';
+import { IsDate, IsDateString, IsIn, IsString, IsUUID } from 'class-validator';
 
 export class TaskInput {
   @IsUUID('4')
@@ -17,8 +22,6 @@ export class TaskInput {
   @IsString()
   createdBy: string;
 
-  notified: boolean;
-
   @IsString()
   @IsIn(Object.values(TaskPriority))
   priority: TaskPriority;
@@ -30,4 +33,10 @@ export class TaskInput {
   @IsString()
   @IsIn(Object.values(TaskType))
   type: TaskType;
+
+  @IsIn(Object.values(NotificationStage), { each: true })
+  notificationStages: NotificationStage[];
+
+  @IsDateString()
+  notifiedAt: string;
 }
