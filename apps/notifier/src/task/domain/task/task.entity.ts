@@ -50,11 +50,17 @@ export class Task {
   }
 
   shouldNotify(): boolean {
+    const now = DateTime.local();
     const diff = this.date.diff(DateTime.local());
+
+    if (!(now.hour >= 8 && now.hour < 24)) return false;
 
     if (diff.as('hours') < 0) {
       if (this.type === TaskType.SCHEDULED) return false;
-      return DateTime.local().minute === 0;
+
+      if (!this.notifiedAt) return true;
+
+      return DateTime.local().diff(this.notifiedAt).as('hours') > 1;
     }
 
     if (diff.as('minutes') < 15) {
@@ -96,7 +102,12 @@ export class Task {
 
   notify() {
     const stage = this.getNotificationStage();
-    this.notificationStages.push(stage);
+    this.addNotificationStage(stage);
     this.notifiedAt = DateTime.local();
+  }
+
+  private addNotificationStage(stage: NotificationStage): void {
+    if (this.notificationStages.includes(stage)) return;
+    this.notificationStages.push(stage);
   }
 }
