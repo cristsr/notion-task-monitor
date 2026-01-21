@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { NotifierPort } from '../../../application/ports';
 import { NotifierTypes } from '../../../application/types';
+import { Notification } from '../../../domain';
 
 @Injectable()
 export class PushoverNotifierService implements NotifierPort {
@@ -18,7 +19,7 @@ export class PushoverNotifierService implements NotifierPort {
    * Notify
    * @param payload
    */
-  notify(payload: any): void {
+  notify(payload: Notification): void {
     const url = this.config.get('PUSHOVER_URL') + '/1/messages.json';
     const token = this.config.get('PUSHOVER_API_KEY');
     const user = this.config.get('PUSHOVER_API_USER');
@@ -37,9 +38,8 @@ export class PushoverNotifierService implements NotifierPort {
         }),
       )
       .subscribe({
-        next: (response) => {
-          this.logger.log(`Notification sent successfully`);
-          this.logger.log(`Notification request id: ${response.data.request}`);
+        next: () => {
+          this.logger.log(`Pushover notification sent successfully`);
         },
         error: (error) => {
           this.logger.error(error.response.data);

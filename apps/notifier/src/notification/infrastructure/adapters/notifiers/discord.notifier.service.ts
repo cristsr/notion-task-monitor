@@ -4,6 +4,7 @@ import { TextChannel, EmbedBuilder } from 'discord.js';
 import { NotifierPort } from '../../../application/ports';
 import { NotifierTypes } from '../../../application/types';
 import { DiscordClient } from '../../config/discord';
+import { Notification } from '../../../domain';
 
 @Injectable()
 export class DiscordNotifierService implements NotifierPort {
@@ -19,7 +20,7 @@ export class DiscordNotifierService implements NotifierPort {
    * Notify to discord
    * @param payload
    */
-  async notify(payload: any): Promise<void> {
+  async notify(payload: Notification): Promise<void> {
     if (!this.client.isReady()) {
       this.logger.warn('Discord bot is not ready yet');
       return;

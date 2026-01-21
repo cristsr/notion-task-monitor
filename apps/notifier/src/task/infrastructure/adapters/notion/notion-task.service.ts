@@ -25,7 +25,7 @@ export class NotionTaskService implements NotionTaskServicePort {
     private readonly config: ConfigService,
   ) {}
 
-  async fetchTasks(): Promise<Task[]> {
+  async execute(): Promise<Task[]> {
     const source = defer(() => this.queryTasks()).pipe(
       expand((state) => {
         if (!state.hasMore) return EMPTY;
