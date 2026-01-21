@@ -3,7 +3,6 @@ import { DateTime } from 'luxon';
 import dedent from 'dedent';
 import { SendNotificationUsecase } from '../../../notification/application/usecases';
 import { NotificationStage, TaskRepository } from '../../domain';
-import { NotifierTypes } from '../../../notification/application/types';
 import { NotifyTaskUseCasePort } from '../ports';
 
 @Injectable()
@@ -45,8 +44,6 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
         title: task.title,
         url: '',
         urlTitle: '📝 Revisar tarea',
-        ttl: 60 * 60 * 12,
-        provider: NotifierTypes.DISCORD,
       });
 
       task.notify();

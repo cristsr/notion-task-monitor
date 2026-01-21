@@ -1,23 +1,36 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-
 import { NOTIFIERS, SendNotificationUsecasePort } from '../ports';
 import { NotificationInput } from '../dto';
 import { Notifiers } from '../types';
+import { ConfigService } from '@nestjs/config';
+import { Notification } from '../../domain';
 
 @Injectable()
 export class SendNotificationUsecase implements SendNotificationUsecasePort {
   constructor(
     @Inject(NOTIFIERS)
     private readonly notifiers: Notifiers,
+    private readonly config: ConfigService,
   ) {}
 
   execute(payload: NotificationInput): void {
-    const strategy = this.notifiers.get(payload.provider);
-    if (!strategy) {
-      throw new NotFoundException(
-        `Notifier provider not found: ${payload.provider}`,
-      );
+    // prettier-ignore
+    const  provider = payload.provider ?? this.config.get('NOTIFICATION_PROVIDER');
+
+    const notifier = this.notifiers.get(provider);
+
+    if (!notifier) {
+      throw new NotFoundException(`Notifier provider not found: ${provider}`);
     }
-    strategy.notify(payload);
+
+    notifier.notify(
+      Notification.create({
+        title: payload.title,
+        message: payload.message,
+        url: payload.url,
+        urlTitle: payload.urlTitle,
+        ttl: payload.ttl ?? +this.config.get('NOTIFICATION_TTL'),
+      }),
+    );
   }
 }
