@@ -17,7 +17,6 @@ import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
   imports: [],
   controllers: [NotificationsController],
   providers: [
-    SendNotificationUsecase,
     DiscordNotifierService,
     PushoverNotifierService,
     {
@@ -35,6 +34,6 @@ import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
       inject: [ConfigService],
     },
   ],
-  exports: [SendNotificationUsecase],
+  exports: [SendNotificationUsecasePort],
 })
 export class NotificationModule {}

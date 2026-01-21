@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import dedent from 'dedent';
-import { SendNotificationUsecase } from '../../../notification/application/usecases';
 import { NotificationStage, TaskRepository } from '../../domain';
 import { NotifyTaskUseCasePort } from '../ports';
+import { SendNotificationUsecasePort } from '../../../notification/application/ports';
 
 @Injectable()
 export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
@@ -11,7 +11,7 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
 
   constructor(
     private readonly taskRepository: TaskRepository,
-    private readonly notificationService: SendNotificationUsecase,
+    private readonly notificationService: SendNotificationUsecasePort,
   ) {}
 
   async execute(): Promise<void> {
