@@ -10,7 +10,7 @@ export class SyncTaskUsecase implements SyncTaskUsecasePort {
   ) {}
 
   async execute(): Promise<void> {
-    const tasks = await this.notionTaskService.fetchTasks();
+    const tasks = await this.notionTaskService.execute();
 
     await this.removeObsoleteTasks(tasks);
 
