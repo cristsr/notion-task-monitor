@@ -53,16 +53,8 @@ export class Task {
     const diff = this.date.diff(DateTime.local());
 
     if (diff.as('hours') < 0) {
-      if (this.type === TaskType.SCHEDULED) {
-        return false;
-      }
-
-      if (!this.notifiedAt) return true;
-
-      return (
-        this.type === TaskType.NORMAL &&
-        DateTime.local().diff(this.notifiedAt).as('hours') > 1
-      );
+      if (this.type === TaskType.SCHEDULED) return false;
+      return DateTime.local().minute === 0;
     }
 
     if (diff.as('minutes') < 15) {

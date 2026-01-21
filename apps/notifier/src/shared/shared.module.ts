@@ -9,11 +9,12 @@ import {
   LokidbConnection,
   LokidbConnectionFactory,
 } from './infrastructure/config/lokidb';
+import { HealthcheckController } from './infrastructure/adapters';
 
 @Global()
 @Module({
   imports: [],
-  controllers: [],
+  controllers: [HealthcheckController],
   providers: [
     {
       provide: Cache,
