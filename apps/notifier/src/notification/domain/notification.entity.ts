@@ -9,7 +9,21 @@ export class Notification {
 
   ttl: number;
 
-  private constructor(payload: Partial<Notification>) {
+  private constructor(payload: Notification) {
     Object.assign(this, payload);
+  }
+
+  static create(payload: Notification): Notification {
+    return new Notification(payload);
+  }
+
+  static createDefault(): Notification {
+    return new Notification({
+      title: '',
+      message: '',
+      url: '',
+      urlTitle: '',
+      ttl: 0,
+    });
   }
 }

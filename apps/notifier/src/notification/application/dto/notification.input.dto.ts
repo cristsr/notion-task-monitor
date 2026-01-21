@@ -1,8 +1,7 @@
-import { Notification } from '../../domain';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { NotifierTypes } from '../types';
 
-export class NotificationInput implements Notification {
+export class NotificationInput {
   @IsString()
   title: string;
 
@@ -19,8 +18,9 @@ export class NotificationInput implements Notification {
 
   @IsNumber()
   @IsOptional()
-  ttl: number;
+  ttl?: number;
 
   @IsString()
-  provider: NotifierTypes;
+  @IsOptional()
+  provider?: NotifierTypes;
 }
