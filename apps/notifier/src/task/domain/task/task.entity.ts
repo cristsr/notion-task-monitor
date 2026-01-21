@@ -31,6 +31,8 @@ export class Task {
 
   notifiedAt: DateTime | null;
 
+  url: string;
+
   private constructor(payload?: Partial<Task>) {
     Object.assign(this, payload);
   }
@@ -63,17 +65,17 @@ export class Task {
       return DateTime.local().diff(this.notifiedAt).as('hours') > 1;
     }
 
-    if (diff.as('minutes') < 15) {
+    if (diff.as('minutes') <= 15) {
       return !this.notificationStages.includes(
         NotificationStage.BEFORE_15_MINUTES,
       );
     }
 
-    if (diff.as('hours') < 1) {
+    if (diff.as('hours') <= 1) {
       return !this.notificationStages.includes(NotificationStage.BEFORE_1_HOUR);
     }
 
-    if (diff.as('hours') < 24) {
+    if (diff.as('hours') <= 24) {
       return !this.notificationStages.includes(
         NotificationStage.BEFORE_24_HOURS,
       );
@@ -89,11 +91,11 @@ export class Task {
       return NotificationStage.AFTER_NOW;
     }
 
-    if (diff.as('minutes') < 15) {
+    if (diff.as('minutes') <= 15) {
       return NotificationStage.BEFORE_15_MINUTES;
     }
 
-    if (diff.as('hours') < 1) {
+    if (diff.as('hours') <= 1) {
       return NotificationStage.BEFORE_1_HOUR;
     }
 

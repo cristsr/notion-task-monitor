@@ -5,6 +5,7 @@ import { NotifierPort } from '../../../application/ports';
 import { NotifierTypes } from '../../../application/types';
 import { DiscordClient } from '../../config/discord';
 import { Notification } from '../../../domain';
+import dedent from 'dedent';
 
 @Injectable()
 export class DiscordNotifierService implements NotifierPort {
@@ -42,9 +43,14 @@ export class DiscordNotifierService implements NotifierPort {
         return;
       }
 
+      const message = dedent`
+        •
+        ${payload.message}
+      `;
+
       const embed = new EmbedBuilder()
         .setTitle(payload.title)
-        .setDescription(payload.message.trim())
+        .setDescription(message.trim())
         .setColor('#f2e558')
         .setTimestamp()
         .setAuthor({

@@ -34,7 +34,6 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
       const stageLabel = this.getStageLabel(task.getNotificationStage());
 
       const message = dedent`
-         •
          🔔 ${stageLabel}
          ⏲ Hora de finalizacion: ${endDate}
       `;
@@ -42,8 +41,8 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
       this.notificationService.execute({
         message,
         title: task.title,
-        url: '',
-        urlTitle: '📝 Revisar tarea',
+        url: task.url,
+        urlTitle: '📝 Ver tarea',
       });
 
       task.notify();

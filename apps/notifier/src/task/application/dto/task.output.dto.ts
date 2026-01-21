@@ -45,6 +45,8 @@ export class TaskOutput {
   @Optional()
   notifiedAt?: string;
 
+  url: string;
+
   constructor(payload: TaskOutput) {
     Object.assign(this, payload);
   }
