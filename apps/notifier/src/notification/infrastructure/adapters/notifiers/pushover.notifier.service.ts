@@ -42,7 +42,6 @@ export class PushoverNotifierService implements NotifierPort {
           this.logger.log(`Pushover notification sent successfully`);
         },
         error: (error) => {
-          this.logger.error(error.response.data);
           this.logger.error(error.message);
         },
       });

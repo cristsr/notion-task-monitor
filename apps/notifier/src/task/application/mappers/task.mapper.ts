@@ -15,6 +15,7 @@ export class TaskMapper {
       type: task.type,
       notificationStages: task.notificationStages,
       notifiedAt: task.notifiedAt?.toISO(),
+      url: task.url,
     });
   }
 }

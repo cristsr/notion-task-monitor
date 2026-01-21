@@ -26,6 +26,8 @@ export class LokidbTaskEntity {
 
   notifiedAt: string;
 
+  url: string;
+
   constructor(payload: LokidbTaskEntity) {
     Object.assign(this, payload);
   }
