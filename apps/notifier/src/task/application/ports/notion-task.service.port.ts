@@ -1,5 +1,6 @@
 import { Task } from '../../domain';
 
 export abstract class NotionTaskServicePort {
-  abstract execute(): Promise<Task[]>;
+  abstract fetchAll(): Promise<Task[]>;
+  abstract fetchById(id: string): Promise<Task>;
 }

@@ -10,6 +10,7 @@ import {
   SyncTaskUsecase,
 } from './application/usecases';
 import {
+  ManageTaskUseCasePort,
   NotifyTaskUseCasePort,
   NotionTaskServicePort,
   RetrieveTaskUsecasePort,
@@ -21,6 +22,7 @@ import {
   MongodbTaskEntityProvider,
   MongodbTaskRepository,
 } from './infrastructure/adapters/persistence/mongodb/task';
+import { ManageTaskUsecase } from './application/usecases/manage-task.usecase';
 
 @Module({
   imports: [
@@ -50,6 +52,10 @@ import {
     {
       provide: TaskRepository,
       useClass: MongodbTaskRepository,
+    },
+    {
+      provide: ManageTaskUseCasePort,
+      useClass: ManageTaskUsecase,
     },
   ],
 })

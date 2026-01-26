@@ -16,6 +16,7 @@ import {
 } from 'rxjs';
 import { NotionTaskMapper } from './notion-task.mapper';
 import { Task } from '../../../domain';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 @Injectable()
 export class NotionTaskService implements NotionTaskServicePort {
@@ -25,7 +26,7 @@ export class NotionTaskService implements NotionTaskServicePort {
     private readonly config: ConfigService,
   ) {}
 
-  async execute(): Promise<Task[]> {
+  async fetchAll(): Promise<Task[]> {
     const source = defer(() => this.queryTasks()).pipe(
       expand((state) => {
         if (!state.hasMore) return EMPTY;
@@ -38,6 +39,13 @@ export class NotionTaskService implements NotionTaskServicePort {
     );
 
     return await lastValueFrom(source);
+  }
+
+  async fetchById(id: string): Promise<Task | null> {
+    const response = await this.notionClient.pages.retrieve({
+      page_id: id,
+    });
+    return NotionTaskMapper.toDomain(response as PageObjectResponse);
   }
 
   private queryTasks(cursor?: string) {

@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { NotionTaskServicePort, SyncTaskUsecasePort } from '../ports';
 import { Task, TaskRepository } from '../../domain';
 
+/**
+ * @Deprecated
+ */
 @Injectable()
 export class SyncTaskUsecase implements SyncTaskUsecasePort {
   constructor(
@@ -10,7 +13,7 @@ export class SyncTaskUsecase implements SyncTaskUsecasePort {
   ) {}
 
   async execute(): Promise<void> {
-    const tasks = await this.notionTaskService.execute();
+    const tasks = await this.notionTaskService.fetchAll();
 
     await this.removeObsoleteTasks(tasks);
 

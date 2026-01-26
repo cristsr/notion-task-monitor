@@ -9,7 +9,10 @@ import {
   LokidbConnection,
   LokidbConnectionFactory,
 } from './infrastructure/config/lokidb';
-import { HealthcheckController } from './infrastructure/adapters';
+import {
+  HealthcheckController,
+  NotionController,
+} from './infrastructure/adapters';
 import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import {
   MongodbConnection,
@@ -17,21 +20,30 @@ import {
 } from './infrastructure/config/mongodb';
 import { Connection } from 'mongoose';
 import { APP_GUARD } from '@nestjs/core';
-import { Base64AuthGuard } from './infrastructure/guards';
+import { BasicAuthGuard } from './infrastructure/guards';
+import { EventEmitter } from './infrastructure/config/events';
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 
 @Global()
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+      global: true,
+    }),
     MongooseModule.forRootAsync({
       useFactory: MongodbConnectionFactory.create(),
       inject: [ConfigService],
     }),
   ],
-  controllers: [HealthcheckController],
+  controllers: [HealthcheckController, NotionController],
   providers: [
     {
       provide: Cache,
       useExisting: CACHE_MANAGER,
+    },
+    {
+      provide: EventEmitter,
+      useExisting: EventEmitter2,
     },
     {
       provide: NotionClient,
@@ -50,7 +62,7 @@ import { Base64AuthGuard } from './infrastructure/guards';
     },
     {
       provide: APP_GUARD,
-      useClass: Base64AuthGuard,
+      useClass: BasicAuthGuard,
     },
   ],
   exports: [NotionClient, Cache, LokidbConnection],
