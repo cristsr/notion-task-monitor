@@ -6,16 +6,27 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class Base64AuthGuard implements CanActivate {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly reflector: Reflector,
+  ) {}
 
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'];
+
+    const isPublic = this.reflector.getAllAndOverride('IS_PUBLIC', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) return true;
 
     if (!authHeader?.startsWith('Basic ')) {
       throw new UnauthorizedException('Basic authentication required');
