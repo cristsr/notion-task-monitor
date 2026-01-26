@@ -10,10 +10,22 @@ import {
   LokidbConnectionFactory,
 } from './infrastructure/config/lokidb';
 import { HealthcheckController } from './infrastructure/adapters';
+import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
+import {
+  MongodbConnection,
+  MongodbConnectionFactory,
+} from './infrastructure/config/mongodb';
+import { Connection } from 'mongoose';
 
 @Global()
 @Module({
-  imports: [],
+  imports: [
+    MongooseModule.forRootAsync({
+      // connectionName: 'default',
+      useFactory: MongodbConnectionFactory.create(),
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [HealthcheckController],
   providers: [
     {
@@ -29,6 +41,11 @@ import { HealthcheckController } from './infrastructure/adapters';
       provide: LokidbConnection,
       useFactory: LokidbConnectionFactory.create(),
       inject: [ConfigService],
+    },
+    {
+      provide: MongodbConnection,
+      useFactory: (conn: Connection) => conn,
+      inject: [getConnectionToken()],
     },
   ],
   exports: [NotionClient, Cache, LokidbConnection],
