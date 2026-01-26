@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { NotificationModule } from '../notification/notification.module';
-import {
-  LokidbTaskRepository,
-  LokidbTaskEntityProvider,
-} from './infrastructure/adapters/persistence/lokidb/task';
+import { LokidbTaskEntityProvider } from './infrastructure/adapters/persistence/lokidb/task';
 import { TaskController } from './infrastructure/adapters/http';
 import { TaskScheduler } from './infrastructure/adapters/schedulers';
 import { NotionTaskService } from './infrastructure/adapters/notion';
@@ -19,9 +16,17 @@ import {
   SyncTaskUsecasePort,
 } from './application/ports';
 import { TaskRepository } from './domain';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  MongodbTaskEntityProvider,
+  MongodbTaskRepository,
+} from './infrastructure/adapters/persistence/mongodb/task';
 
 @Module({
-  imports: [NotificationModule],
+  imports: [
+    NotificationModule,
+    MongooseModule.forFeature([MongodbTaskEntityProvider]),
+  ],
   controllers: [TaskController],
   providers: [
     TaskScheduler,
@@ -44,7 +49,7 @@ import { TaskRepository } from './domain';
     },
     {
       provide: TaskRepository,
-      useClass: LokidbTaskRepository,
+      useClass: MongodbTaskRepository,
     },
   ],
 })
