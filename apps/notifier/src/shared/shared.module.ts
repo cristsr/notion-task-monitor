@@ -16,12 +16,13 @@ import {
   MongodbConnectionFactory,
 } from './infrastructure/config/mongodb';
 import { Connection } from 'mongoose';
+import { APP_GUARD } from '@nestjs/core';
+import { Base64AuthGuard } from './infrastructure/guards/base64-auth.guard';
 
 @Global()
 @Module({
   imports: [
     MongooseModule.forRootAsync({
-      // connectionName: 'default',
       useFactory: MongodbConnectionFactory.create(),
       inject: [ConfigService],
     }),
@@ -46,6 +47,10 @@ import { Connection } from 'mongoose';
       provide: MongodbConnection,
       useFactory: (conn: Connection) => conn,
       inject: [getConnectionToken()],
+    },
+    {
+      provide: APP_GUARD,
+      useClass: Base64AuthGuard,
     },
   ],
   exports: [NotionClient, Cache, LokidbConnection],
