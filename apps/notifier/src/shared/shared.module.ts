@@ -17,7 +17,7 @@ import {
 } from './infrastructure/config/mongodb';
 import { Connection } from 'mongoose';
 import { APP_GUARD } from '@nestjs/core';
-import { Base64AuthGuard } from './infrastructure/guards/base64-auth.guard';
+import { Base64AuthGuard } from './infrastructure/guards';
 
 @Global()
 @Module({
