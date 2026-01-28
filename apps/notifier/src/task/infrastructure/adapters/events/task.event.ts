@@ -18,7 +18,7 @@ export class TaskEvent {
 
   @OnEvent('notion.event')
   async onNotionEvent(event: NotionEventInput) {
-    const notionDatasource = this.configService.get('TASK_NOTION_DATASOURCE');
+    const notionDatasource = this.configService.get('NOTION_TASK_DATASOURCE');
 
     if (event.data.parent.data_source_id !== notionDatasource) return;
 

@@ -1,13 +1,17 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
 import { EventEmitterPort } from '../../../application/ports';
 import { NotionEventInput } from '../../dtos';
+import { Public } from '../../decorators';
+import { NotionGuard } from '../../guards';
 
 @Controller('notion')
 export class NotionController {
   private readonly logger = new Logger(NotionController.name);
   constructor(private readonly eventEmitter: EventEmitterPort) {}
 
-  @Post('events')
+  @Public()
+  @UseGuards(NotionGuard)
+  @Post('webhook')
   onEvent(@Body() event: NotionEventInput) {
     this.logger.log({
       message: 'Notion event received',
