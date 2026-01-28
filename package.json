@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "nx": "npx nx"
+    "nx": "npx nx",
+    "format": "nx format:write"
   },
   "keywords": [],
   "author": "",

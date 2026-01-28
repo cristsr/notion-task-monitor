@@ -12,7 +12,7 @@ import {
 import {
   HealthcheckController,
   NotionController,
-} from './infrastructure/adapters';
+} from './infrastructure/adapters/http';
 import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import {
   MongodbConnection,
@@ -21,7 +21,7 @@ import {
 import { Connection } from 'mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { BasicAuthGuard } from './infrastructure/guards';
-import { EventEmitter } from './infrastructure/config/events';
+import { EventEmitterPort } from './application/ports';
 import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 
 @Global()
@@ -42,7 +42,7 @@ import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
       useExisting: CACHE_MANAGER,
     },
     {
-      provide: EventEmitter,
+      provide: EventEmitterPort,
       useExisting: EventEmitter2,
     },
     {

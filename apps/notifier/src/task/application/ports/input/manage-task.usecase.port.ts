@@ -1,4 +1,4 @@
-import { Uuid } from '../../../shared/domain/value-objects';
+import { Uuid } from '../../../../shared/domain/value-objects';
 
 export abstract class ManageTaskUseCasePort {
   abstract syncTask(taskId: Uuid): Promise<void>;

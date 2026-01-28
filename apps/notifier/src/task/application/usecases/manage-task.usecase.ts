@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ManageTaskUseCasePort, NotionTaskServicePort } from '../ports';
+import { ManageTaskUseCasePort, NotionTaskProviderPort } from '../ports';
 import { Uuid } from '../../../shared/domain/value-objects';
 import { Promise } from 'mongoose';
 import { TaskRepository } from '../../domain';
@@ -8,7 +8,7 @@ import { TaskRepository } from '../../domain';
 export class ManageTaskUsecase implements ManageTaskUseCasePort {
   constructor(
     private readonly taskRepository: TaskRepository,
-    private readonly notionTaskService: NotionTaskServicePort,
+    private readonly notionTaskService: NotionTaskProviderPort,
   ) {}
 
   async syncTask(taskId: Uuid): Promise<void> {
