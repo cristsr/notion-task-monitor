@@ -6,7 +6,7 @@ export class NotionClientFactory {
   static getClient() {
     return (config: ConfigService) => {
       return new NotionClient({
-        auth: config.get('NOTION_TOKEN'),
+        auth: config.get('NOTION_API_TOKEN'),
         logLevel: LogLevel.ERROR,
       });
     };

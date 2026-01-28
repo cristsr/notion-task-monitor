@@ -51,7 +51,7 @@ export class NotionTaskProvider implements NotionTaskProviderPort {
   private queryTasks(cursor?: string) {
     return from(
       this.notionClient.databases.query({
-        database_id: this.config.get('TASK_DATABASE_ID'),
+        database_id: this.config.get('NOTION_TASK_DATABASE_ID'),
         filter: {
           and: [
             {
