@@ -11,7 +11,7 @@ export class MongodbTaskEntity {
   title: string;
 
   @Prop(Date)
-  date: string;
+  date: Date;
 
   @Prop(String)
   status: TaskStatus;
@@ -29,7 +29,7 @@ export class MongodbTaskEntity {
   createdBy: string;
 
   @Prop(Date)
-  createdAt: string;
+  createdAt: Date;
 
   @Prop([String])
   notificationStages: string[];

@@ -7,13 +7,13 @@ export class MongodbTaskMapper {
   static toEntity(task: Task): MongodbTaskEntity {
     return new MongodbTaskEntity({
       id: task.id.value,
-      date: task.date.toISO(),
+      date: task.date.toJSDate(),
       title: task.title,
       status: task.status,
       type: task.type,
       assignedTo: task.assignedTo,
       priority: task.priority,
-      createdAt: task.createdAt.toISO(),
+      createdAt: task.createdAt.toJSDate(),
       createdBy: task.createdBy,
       notificationStages: task.notificationStages,
       notifiedAt: task.notifiedAt?.toISO(),
@@ -24,13 +24,13 @@ export class MongodbTaskMapper {
   static toDomain(task: MongodbTaskEntity): Task {
     const payload: Partial<Task> = {
       id: Uuid.create(task.id),
-      date: DateTime.fromISO(task.date),
+      date: DateTime.fromJSDate(task.date),
       title: task.title,
       status: task.status,
       type: task.type,
       assignedTo: task.assignedTo,
       priority: task.priority,
-      createdAt: DateTime.fromISO(task.createdAt),
+      createdAt: DateTime.fromJSDate(task.createdAt),
       createdBy: task.createdBy,
       notificationStages: task.notificationStages as NotificationStage[],
       url: task.url,
