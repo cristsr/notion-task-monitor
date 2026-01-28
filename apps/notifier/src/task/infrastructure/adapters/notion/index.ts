@@ -1,2 +1,2 @@
-export * from './notion-task.service';
+export * from './notion-task.provider';
 export * from './notion-task.mapper';

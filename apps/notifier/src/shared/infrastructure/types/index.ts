@@ -1,1 +1,1 @@
-export * from './generic.types';
+export * from './shared.types';

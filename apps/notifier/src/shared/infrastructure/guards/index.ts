@@ -1,1 +1,1 @@
-export * from './base64-auth.guard';
+export * from './basic-auth.guard';

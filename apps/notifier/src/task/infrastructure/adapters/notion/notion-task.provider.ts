@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NotionTaskServicePort } from '../../../application/ports';
+import { NotionTaskProviderPort } from '../../../application/ports';
 import { NotionClient } from '../../../../shared/infrastructure/config/notion';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -16,16 +16,17 @@ import {
 } from 'rxjs';
 import { NotionTaskMapper } from './notion-task.mapper';
 import { Task } from '../../../domain';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 @Injectable()
-export class NotionTaskService implements NotionTaskServicePort {
-  private readonly logger = new Logger(NotionTaskService.name);
+export class NotionTaskProvider implements NotionTaskProviderPort {
+  private readonly logger = new Logger(NotionTaskProvider.name);
   constructor(
     private readonly notionClient: NotionClient,
     private readonly config: ConfigService,
   ) {}
 
-  async execute(): Promise<Task[]> {
+  async fetchAll(): Promise<Task[]> {
     const source = defer(() => this.queryTasks()).pipe(
       expand((state) => {
         if (!state.hasMore) return EMPTY;
@@ -38,6 +39,13 @@ export class NotionTaskService implements NotionTaskServicePort {
     );
 
     return await lastValueFrom(source);
+  }
+
+  async fetchById(id: string): Promise<Task | null> {
+    const response = await this.notionClient.pages.retrieve({
+      page_id: id,
+    });
+    return NotionTaskMapper.toDomain(response as PageObjectResponse);
   }
 
   private queryTasks(cursor?: string) {

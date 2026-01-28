@@ -18,11 +18,6 @@ export class TaskScheduler implements OnModuleInit {
   }
 
   @Cron(CronExpression.EVERY_MINUTE)
-  async syncTasks(): Promise<void> {
-    await this.syncTaskUsecase.execute();
-  }
-
-  @Cron(CronExpression.EVERY_MINUTE)
   async notifyTasks(): Promise<void> {
     await this.notifyTaskUsecase.execute();
   }

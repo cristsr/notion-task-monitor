@@ -3,15 +3,16 @@ import { NotificationModule } from '../notification/notification.module';
 import { LokidbTaskEntityProvider } from './infrastructure/adapters/persistence/lokidb/task';
 import { TaskController } from './infrastructure/adapters/http';
 import { TaskScheduler } from './infrastructure/adapters/schedulers';
-import { NotionTaskService } from './infrastructure/adapters/notion';
+import { NotionTaskProvider } from './infrastructure/adapters/notion';
 import {
   NotifyTaskUsecase,
   RetrieveTaskUsecase,
   SyncTaskUsecase,
 } from './application/usecases';
 import {
+  ManageTaskUseCasePort,
   NotifyTaskUseCasePort,
-  NotionTaskServicePort,
+  NotionTaskProviderPort,
   RetrieveTaskUsecasePort,
   SyncTaskUsecasePort,
 } from './application/ports';
@@ -21,6 +22,7 @@ import {
   MongodbTaskEntityProvider,
   MongodbTaskRepository,
 } from './infrastructure/adapters/persistence/mongodb/task';
+import { ManageTaskUsecase } from './application/usecases/manage-task.usecase';
 
 @Module({
   imports: [
@@ -44,12 +46,16 @@ import {
       useClass: SyncTaskUsecase,
     },
     {
-      provide: NotionTaskServicePort,
-      useClass: NotionTaskService,
+      provide: NotionTaskProviderPort,
+      useClass: NotionTaskProvider,
     },
     {
       provide: TaskRepository,
       useClass: MongodbTaskRepository,
+    },
+    {
+      provide: ManageTaskUseCasePort,
+      useClass: ManageTaskUsecase,
     },
   ],
 })
