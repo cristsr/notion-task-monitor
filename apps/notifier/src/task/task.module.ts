@@ -23,6 +23,7 @@ import {
   MongodbTaskRepository,
 } from './infrastructure/adapters/persistence/mongodb/task';
 import { ManageTaskUsecase } from './application/usecases/manage-task.usecase';
+import { TaskEvent } from './infrastructure/adapters/events';
 
 @Module({
   imports: [
@@ -31,8 +32,9 @@ import { ManageTaskUsecase } from './application/usecases/manage-task.usecase';
   ],
   controllers: [TaskController],
   providers: [
-    TaskScheduler,
     LokidbTaskEntityProvider,
+    TaskScheduler,
+    TaskEvent,
     {
       provide: NotifyTaskUseCasePort,
       useClass: NotifyTaskUsecase,
