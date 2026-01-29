@@ -13,6 +13,12 @@ export class ManageTaskUsecase implements ManageTaskUseCasePort {
 
   async syncTask(taskId: Uuid): Promise<void> {
     const task = await this.notionTaskService.fetchById(taskId.value);
+
+    if (task.isDone()) {
+      await this.taskRepository.remove(task);
+      return;
+    }
+
     await this.taskRepository.save(task);
   }
 

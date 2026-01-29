@@ -108,6 +108,10 @@ export class Task {
     this.notifiedAt = DateTime.local();
   }
 
+  isDone(): boolean {
+    return this.status === TaskStatus.DONE;
+  }
+
   private addNotificationStage(stage: NotificationStage): void {
     if (this.notificationStages.includes(stage)) return;
     this.notificationStages.push(stage);
