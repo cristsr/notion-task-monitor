@@ -17,6 +17,7 @@ export class LokidbTaskMapper {
       createdBy: task.createdBy,
       notificationStages: task.notificationStages,
       notifiedAt: task.notifiedAt?.toISO(),
+      hidden: task.hidden,
       url: task.url,
     });
   }
@@ -34,6 +35,7 @@ export class LokidbTaskMapper {
       createdBy: task.createdBy,
       notificationStages: task.notificationStages as NotificationStage[],
       url: task.url,
+      hidden: task.hidden,
     };
 
     if (task.notifiedAt) {

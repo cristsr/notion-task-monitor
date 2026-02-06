@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NotionTaskProviderPort } from '../../../application/ports';
+import { NotionTaskRepositoryPort } from '../../../application/ports';
 import { NotionClient } from '../../../../shared/infrastructure/config/notion';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -19,8 +19,8 @@ import { Task } from '../../../domain';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 @Injectable()
-export class NotionTaskProvider implements NotionTaskProviderPort {
-  private readonly logger = new Logger(NotionTaskProvider.name);
+export class NotionTaskRepository implements NotionTaskRepositoryPort {
+  private readonly logger = new Logger(NotionTaskRepository.name);
   constructor(
     private readonly notionClient: NotionClient,
     private readonly config: ConfigService,
@@ -46,6 +46,17 @@ export class NotionTaskProvider implements NotionTaskProviderPort {
       page_id: id,
     });
     return NotionTaskMapper.toDomain(response as PageObjectResponse);
+  }
+
+  async updateVisibility(task: Task): Promise<void> {
+    await this.notionClient.pages.update({
+      page_id: task.id.value,
+      properties: {
+        '👁 Hidden': {
+          checkbox: task.hidden,
+        },
+      },
+    });
   }
 
   private queryTasks(cursor?: string) {

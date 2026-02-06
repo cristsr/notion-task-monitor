@@ -4,7 +4,13 @@ import {
   TaskStatus,
   TaskType,
 } from '../../domain';
-import { IsDateString, IsIn, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsIn,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { Optional } from '@nestjs/common';
 
 export class TaskOutput {
@@ -44,6 +50,9 @@ export class TaskOutput {
   @IsDateString()
   @Optional()
   notifiedAt?: string;
+
+  @IsBoolean()
+  hidden: boolean;
 
   url: string;
 

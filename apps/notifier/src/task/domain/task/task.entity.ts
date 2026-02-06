@@ -33,6 +33,8 @@ export class Task {
 
   url: string;
 
+  hidden: boolean;
+
   private constructor(payload?: Partial<Task>) {
     Object.assign(this, payload);
   }
@@ -108,8 +110,24 @@ export class Task {
     this.notifiedAt = DateTime.local();
   }
 
+  mustBeVisible(): boolean {
+    if (this.isVisible()) return false;
+
+    const diff = this.date.diff(DateTime.local());
+
+    return diff.as('hours') <= 24;
+  }
+
   isDone(): boolean {
     return this.status === TaskStatus.DONE;
+  }
+
+  isVisible(): boolean {
+    return !this.hidden;
+  }
+
+  setVisible(visible: boolean) {
+    this.hidden = !visible;
   }
 
   private addNotificationStage(stage: NotificationStage): void {

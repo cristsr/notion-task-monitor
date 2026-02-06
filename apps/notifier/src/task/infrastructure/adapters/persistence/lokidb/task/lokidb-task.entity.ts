@@ -26,6 +26,8 @@ export class LokidbTaskEntity {
 
   notifiedAt: string;
 
+  hidden: boolean;
+
   url: string;
 
   constructor(payload: LokidbTaskEntity) {

@@ -28,6 +28,7 @@ export class NotionTaskMapper {
       date: DateTime.fromISO(input.properties['📅 Date']['date'].start),
       priority: input.properties['🚨 Priority']['select'].name,
       type: typeMap[input.properties['📋 Type']['select'].name],
+      hidden: input.properties['👁 Hidden']['checkbox'],
       url: input.url,
       notificationStages: [],
       notifiedAt: null,

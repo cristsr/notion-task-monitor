@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { NotionTaskProviderPort, SyncTaskUsecasePort } from '../ports';
+import { NotionTaskRepositoryPort, SyncTaskUsecasePort } from '../ports';
 import { Task, TaskRepository } from '../../domain';
 
 @Injectable()
 export class SyncTaskUsecase implements SyncTaskUsecasePort {
   constructor(
-    private readonly notionTaskService: NotionTaskProviderPort,
+    private readonly notionTaskService: NotionTaskRepositoryPort,
     private readonly taskRepository: TaskRepository,
   ) {}
 

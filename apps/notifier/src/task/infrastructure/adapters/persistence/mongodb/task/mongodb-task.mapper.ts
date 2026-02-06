@@ -17,6 +17,7 @@ export class MongodbTaskMapper {
       createdBy: task.createdBy,
       notificationStages: task.notificationStages,
       notifiedAt: task.notifiedAt?.toISO(),
+      hidden: task.hidden,
       url: task.url,
     });
   }
@@ -33,6 +34,7 @@ export class MongodbTaskMapper {
       createdAt: DateTime.fromJSDate(task.createdAt),
       createdBy: task.createdBy,
       notificationStages: task.notificationStages as NotificationStage[],
+      hidden: task.hidden,
       url: task.url,
     };
 
