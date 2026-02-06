@@ -43,6 +43,14 @@ export class Task {
     return new Task(payload);
   }
 
+  static default(): Task {
+    return new Task();
+  }
+
+  merge(tasks: Task) {
+    return Object.assign(this, tasks);
+  }
+
   equals(other: Task): boolean {
     const conditions = [
       this.id.equals(other.id),
