@@ -40,6 +40,9 @@ export class MongodbTaskEntity {
   @Prop(String)
   url: string;
 
+  @Prop(Boolean)
+  hidden: boolean;
+
   constructor(payload: MongodbTaskEntity) {
     Object.assign(this, payload);
   }
