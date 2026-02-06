@@ -2,13 +2,14 @@ import { TaskRepository, Task } from '../../../../../domain';
 import { LokidbTaskMapper } from './lokidb-task.mapper';
 import { LokidbTaskCollection } from './lokidb-task.collection';
 import { Injectable } from '@nestjs/common';
+import { Uuid } from '../../../../../../shared/domain/value-objects';
 
 @Injectable()
 export class LokidbTaskRepository implements TaskRepository {
   constructor(private readonly tasksCollection: LokidbTaskCollection) {}
 
-  async findById(id: string): Promise<Task | null> {
-    const task = this.tasksCollection.findOne({ id });
+  async findById(id: Uuid): Promise<Task | null> {
+    const task = this.tasksCollection.findOne({ id: id.value });
     if (!task) return null;
     return LokidbTaskMapper.toDomain(task);
   }
@@ -19,7 +20,7 @@ export class LokidbTaskRepository implements TaskRepository {
   }
 
   async save(task: Task): Promise<void> {
-    const existTask = await this.findById(task.id.value);
+    const existTask = await this.findById(task.id);
 
     if (!existTask) {
       this.tasksCollection.insertOne(LokidbTaskMapper.toEntity(task));

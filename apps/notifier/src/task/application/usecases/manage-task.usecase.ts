@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ManageTaskUseCasePort, NotionTaskRepositoryPort } from '../ports';
 import { Uuid } from '../../../shared/domain/value-objects';
-import { Promise } from 'mongoose';
 import { TaskRepository } from '../../domain';
 
 @Injectable()
@@ -12,18 +11,22 @@ export class ManageTaskUsecase implements ManageTaskUseCasePort {
   ) {}
 
   async syncTask(taskId: Uuid): Promise<void> {
-    const task = await this.notionTaskService.fetchById(taskId.value);
+    const task = await this.notionTaskService.fetchById(taskId);
 
     if (task.isDone()) {
       await this.taskRepository.remove(task);
       return;
     }
 
-    await this.taskRepository.save(task);
+    const existingTask = await this.taskRepository.findById(taskId);
+
+    const newTask = existingTask ? Object.assign(existingTask, task) : task;
+
+    await this.taskRepository.save(newTask);
   }
 
   async removeTask(taskId: Uuid): Promise<void> {
-    const task = await this.taskRepository.findById(taskId.value);
+    const task = await this.taskRepository.findById(taskId);
     await this.taskRepository.remove(task);
   }
 }
