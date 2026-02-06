@@ -4,16 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongodbTaskEntity } from './mongodb-task.entity';
 import { Model } from 'mongoose';
+import { Uuid } from '../../../../../../shared/domain/value-objects';
 
 @Injectable()
 export class MongodbTaskRepository implements TaskRepository {
   constructor(
     @InjectModel(MongodbTaskEntity.name)
-    private taskEntity: Model<MongodbTaskEntity>,
+    private readonly taskEntity: Model<MongodbTaskEntity>,
   ) {}
 
-  async findById(id: string): Promise<Task | null> {
-    const task = await this.taskEntity.findOne({ id }).exec();
+  async findById(id: Uuid): Promise<Task | null> {
+    const task = await this.taskEntity.findOne({ id: id.value }).exec();
     if (!task) return null;
     return MongodbTaskMapper.toDomain(task);
   }
@@ -24,7 +25,7 @@ export class MongodbTaskRepository implements TaskRepository {
   }
 
   async save(task: Task): Promise<void> {
-    const existTask = await this.findById(task.id.value);
+    const existTask = await this.findById(task.id);
 
     if (!existTask) {
       await this.taskEntity.insertOne(MongodbTaskMapper.toEntity(task));

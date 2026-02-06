@@ -31,7 +31,7 @@ export class SyncTaskUsecase implements SyncTaskUsecasePort {
 
   private async updateOrCreateTasks(tasks: Task[]): Promise<void> {
     for (const task of tasks) {
-      const existingTask = await this.taskRepository.findById(task.id.value);
+      const existingTask = await this.taskRepository.findById(task.id);
 
       if (!existingTask || !task.equals(existingTask)) {
         await this.taskRepository.save(task);

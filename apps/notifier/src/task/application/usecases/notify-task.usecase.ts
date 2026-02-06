@@ -23,6 +23,8 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
     const tasks = await this.taskRepository.getAllTask();
 
     for (const task of tasks) {
+      await this.verifyVisibility(task);
+
       if (!task.shouldNotify()) {
         continue;
       }
@@ -40,6 +42,7 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
   private async verifyVisibility(task: Task): Promise<void> {
     if (!task.mustBeVisible()) return;
     task.setVisible(true);
+    await this.taskRepository.save(task);
     await this.notionRepository.updateVisibility(task);
   }
 

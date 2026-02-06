@@ -17,6 +17,7 @@ import {
 import { NotionTaskMapper } from './notion-task.mapper';
 import { Task } from '../../../domain';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { Uuid } from '../../../../shared/domain/value-objects';
 
 @Injectable()
 export class NotionTaskRepository implements NotionTaskRepositoryPort {
@@ -41,9 +42,9 @@ export class NotionTaskRepository implements NotionTaskRepositoryPort {
     return await lastValueFrom(source);
   }
 
-  async fetchById(id: string): Promise<Task | null> {
+  async fetchById(id: Uuid): Promise<Task | null> {
     const response = await this.notionClient.pages.retrieve({
-      page_id: id,
+      page_id: id.value,
     });
     return NotionTaskMapper.toDomain(response as PageObjectResponse);
   }
