@@ -33,6 +33,17 @@ export class LokidbTaskRepository implements TaskRepository {
     );
   }
 
+  async insert(task: Task): Promise<void> {
+    this.tasksCollection.insertOne(LokidbTaskMapper.toEntity(task));
+  }
+
+  async update(task: Task): Promise<void> {
+    this.tasksCollection.updateWhere(
+      (obj) => obj.id === task.id.value,
+      (obj) => ({ ...obj, ...LokidbTaskMapper.toEntity(task) }),
+    );
+  }
+
   async saveMany(tasks: Task[]): Promise<void> {
     tasks.forEach((t) => this.save(t));
   }

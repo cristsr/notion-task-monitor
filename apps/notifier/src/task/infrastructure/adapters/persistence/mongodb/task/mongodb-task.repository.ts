@@ -24,6 +24,21 @@ export class MongodbTaskRepository implements TaskRepository {
     return tasks.map(MongodbTaskMapper.toDomain);
   }
 
+  async insert(task: Task): Promise<void> {
+    await this.taskEntity.insertOne(MongodbTaskMapper.toEntity(task));
+  }
+
+  async update(task: Task): Promise<void> {
+    await this.taskEntity.updateOne(
+      {
+        id: task.id.value,
+      },
+      {
+        $set: MongodbTaskMapper.toEntity(task),
+      },
+    );
+  }
+
   async save(task: Task): Promise<void> {
     const existTask = await this.findById(task.id);
 

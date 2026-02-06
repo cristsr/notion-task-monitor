@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ManageTaskUseCasePort, NotionTaskRepositoryPort } from '../ports';
 import { Uuid } from '../../../shared/domain/value-objects';
-import { TaskRepository } from '../../domain';
+import { Task, TaskRepository } from '../../domain';
 
 @Injectable()
 export class ManageTaskUsecase implements ManageTaskUseCasePort {
+  private readonly logger = new Logger(ManageTaskUsecase.name);
+
   constructor(
     private readonly taskRepository: TaskRepository,
     private readonly notionTaskService: NotionTaskRepositoryPort,
@@ -20,9 +22,17 @@ export class ManageTaskUsecase implements ManageTaskUseCasePort {
 
     const existingTask = await this.taskRepository.findById(taskId);
 
-    const newTask = existingTask ? Object.assign(existingTask, task) : task;
+    if (!existingTask) {
+      await this.taskRepository.insert(task);
+      return;
+    }
 
-    await this.taskRepository.save(newTask);
+    const updateTask = Task.create(task);
+    // keep state from a prev task if exists
+    updateTask.notificationStages = existingTask.notificationStages;
+    updateTask.notifiedAt = existingTask.notifiedAt;
+
+    await this.taskRepository.update(updateTask);
   }
 
   async removeTask(taskId: Uuid): Promise<void> {
