@@ -1,18 +1,18 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import {
-  NotifyTaskUseCasePort,
-  RetrieveTaskUsecasePort,
-  SyncTaskUsecasePort,
-} from '../../../application/ports';
+  NotifyTaskUsecase,
+  RetrieveTaskUsecase,
+  SetupTaskUsecase,
+} from '../../../application/usecases';
 
 @Controller('tasks')
 export class TaskController {
   private readonly logger = new Logger(TaskController.name);
 
   constructor(
-    private readonly notifyTaskUsecase: NotifyTaskUseCasePort,
-    private readonly retrieveTaskUsecase: RetrieveTaskUsecasePort,
-    private readonly syncTaskUsecase: SyncTaskUsecasePort,
+    private readonly notifyTaskUsecase: NotifyTaskUsecase,
+    private readonly retrieveTaskUsecase: RetrieveTaskUsecase,
+    private readonly syncTaskUsecase: SetupTaskUsecase,
   ) {}
 
   @Get()

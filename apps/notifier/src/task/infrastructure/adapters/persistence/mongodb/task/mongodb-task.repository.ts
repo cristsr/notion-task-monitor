@@ -59,10 +59,6 @@ export class MongodbTaskRepository implements TaskRepository {
       .exec();
   }
 
-  async saveMany(tasks: Task[]): Promise<void> {
-    tasks.forEach((t) => this.save(t));
-  }
-
   async remove(task: Task): Promise<void> {
     await this.taskEntity
       .deleteOne({

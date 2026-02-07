@@ -1,29 +1,26 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationModule } from '../notification/notification.module';
-import { LokidbTaskEntityProvider } from './infrastructure/adapters/persistence/lokidb/task';
 import { TaskController } from './infrastructure/adapters/http';
 import { TaskScheduler } from './infrastructure/adapters/schedulers';
-import { NotionTaskRepository } from './infrastructure/adapters/notion';
+import { NotionTaskProvider } from './infrastructure/adapters/notion';
 import {
   NotifyTaskUsecase,
+  PurgeTaskUsecase,
+  RemoveTaskUsecase,
   RetrieveTaskUsecase,
+  SetupTaskUsecase,
   SyncTaskUsecase,
+  VisibilityTaskUsecase,
 } from './application/usecases';
-import {
-  ManageTaskUseCasePort,
-  NotifyTaskUseCasePort,
-  NotionTaskRepositoryPort,
-  RetrieveTaskUsecasePort,
-  SyncTaskUsecasePort,
-} from './application/ports';
+import { TaskProviderPort } from './application/ports';
 import { TaskRepository } from './domain';
-import { MongooseModule } from '@nestjs/mongoose';
 import {
   MongodbTaskEntityProvider,
   MongodbTaskRepository,
 } from './infrastructure/adapters/persistence/mongodb/task';
-import { ManageTaskUsecase } from './application/usecases/manage-task.usecase';
-import { TaskEvent } from './infrastructure/adapters/events';
+import { EventTaskService } from './infrastructure/adapters/events';
+import { SetupTaskService } from './infrastructure/adapters/bootstrap';
 
 @Module({
   imports: [
@@ -32,32 +29,23 @@ import { TaskEvent } from './infrastructure/adapters/events';
   ],
   controllers: [TaskController],
   providers: [
-    LokidbTaskEntityProvider,
     TaskScheduler,
-    TaskEvent,
+    SetupTaskService,
+    EventTaskService,
+    NotifyTaskUsecase,
+    PurgeTaskUsecase,
+    RemoveTaskUsecase,
+    RetrieveTaskUsecase,
+    SetupTaskUsecase,
+    SyncTaskUsecase,
+    VisibilityTaskUsecase,
     {
-      provide: NotifyTaskUseCasePort,
-      useClass: NotifyTaskUsecase,
-    },
-    {
-      provide: RetrieveTaskUsecasePort,
-      useClass: RetrieveTaskUsecase,
-    },
-    {
-      provide: SyncTaskUsecasePort,
-      useClass: SyncTaskUsecase,
-    },
-    {
-      provide: NotionTaskRepositoryPort,
-      useClass: NotionTaskRepository,
+      provide: TaskProviderPort,
+      useClass: NotionTaskProvider,
     },
     {
       provide: TaskRepository,
       useClass: MongodbTaskRepository,
-    },
-    {
-      provide: ManageTaskUseCasePort,
-      useClass: ManageTaskUsecase,
     },
   ],
 })

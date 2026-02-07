@@ -1,41 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { NotionTaskRepositoryPort, SyncTaskUsecasePort } from '../ports';
-import { Task, TaskRepository } from '../../domain';
+import { TaskProviderPort } from '../ports';
+import { Uuid } from '../../../shared/domain/value-objects';
+import { TaskRepository } from '../../domain';
 
 @Injectable()
-export class SyncTaskUsecase implements SyncTaskUsecasePort {
+export class SyncTaskUsecase {
   constructor(
-    private readonly notionTaskService: NotionTaskRepositoryPort,
     private readonly taskRepository: TaskRepository,
+    private readonly taskProvider: TaskProviderPort,
   ) {}
 
-  async execute(): Promise<void> {
-    const tasks = await this.notionTaskService.fetchAll();
+  async execute(taskId: Uuid): Promise<void> {
+    const task = await this.taskProvider.fetchById(taskId);
 
-    await this.removeObsoleteTasks(tasks);
-
-    await this.updateOrCreateTasks(tasks);
-  }
-
-  private async removeObsoleteTasks(tasks: Task[]): Promise<void> {
-    const existingTasks = await this.taskRepository.getAllTask();
-
-    const tasksToRemove = existingTasks.filter(
-      (exist) => !tasks.some((task) => task.id.equals(exist.id)),
-    );
-
-    for (const task of tasksToRemove) {
+    if (task.isDone()) {
       await this.taskRepository.remove(task);
+      return;
     }
-  }
 
-  private async updateOrCreateTasks(tasks: Task[]): Promise<void> {
-    for (const task of tasks) {
-      const existingTask = await this.taskRepository.findById(task.id);
+    const existingTask = await this.taskRepository.findById(taskId);
 
-      if (!existingTask || !task.equals(existingTask)) {
-        await this.taskRepository.save(task);
-      }
+    if (!existingTask) {
+      await this.taskRepository.insert(task);
+      return;
     }
+
+    // Only update props from task provider
+    existingTask.update({
+      title: task.title,
+      date: task.date,
+      status: task.status,
+      priority: task.priority,
+      type: task.type,
+      assignedTo: task.assignedTo,
+      createdBy: task.createdBy,
+      createdAt: task.createdAt,
+      hidden: task.hidden,
+      url: task.url,
+    });
+
+    await this.taskRepository.update(existingTask);
   }
 }

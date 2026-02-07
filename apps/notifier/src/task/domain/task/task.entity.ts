@@ -27,13 +27,13 @@ export class Task {
 
   createdAt: DateTime;
 
-  notificationStages: NotificationStage[];
-
-  notifiedAt: DateTime | null;
-
   url: string;
 
   hidden: boolean;
+
+  notificationStages: NotificationStage[];
+
+  notifiedAt: DateTime | null;
 
   private constructor(payload?: Partial<Task>) {
     Object.assign(this, payload);
@@ -47,8 +47,8 @@ export class Task {
     return new Task();
   }
 
-  merge(tasks: Task) {
-    return Object.assign(this, tasks);
+  update(payload: Partial<PropertiesOnly<Task>>): void {
+    Object.assign(this, payload);
   }
 
   equals(other: Task): boolean {
@@ -118,12 +118,12 @@ export class Task {
     this.notifiedAt = DateTime.local();
   }
 
-  mustBeVisible(): boolean {
+  mustBeVisible(hours: number): boolean {
     if (this.isVisible()) return false;
 
     const diff = this.date.diff(DateTime.local());
 
-    return diff.as('hours') <= 24;
+    return diff.as('hours') <= hours;
   }
 
   isDone(): boolean {

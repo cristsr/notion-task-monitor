@@ -1,1 +1,1 @@
-export * from './task.event';
+export * from './event-task.service';
