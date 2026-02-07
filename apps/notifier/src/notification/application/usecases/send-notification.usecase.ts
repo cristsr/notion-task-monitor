@@ -1,12 +1,12 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { NOTIFIERS, SendNotificationUsecasePort } from '../ports';
+import { NOTIFIERS } from '../ports';
 import { NotificationInput } from '../dto';
 import { Notifiers } from '../types';
 import { ConfigService } from '@nestjs/config';
 import { Notification } from '../../domain';
 
 @Injectable()
-export class SendNotificationUsecase implements SendNotificationUsecasePort {
+export class SendNotificationUsecase {
   constructor(
     @Inject(NOTIFIERS)
     private readonly notifiers: Notifiers,

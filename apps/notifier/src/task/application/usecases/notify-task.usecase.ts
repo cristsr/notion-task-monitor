@@ -2,17 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import dedent from 'dedent';
 import { NotificationStage, Task, TaskRepository } from '../../domain';
-import { NotifyTaskUseCasePort, NotionTaskRepositoryPort } from '../ports';
-import { SendNotificationUsecasePort } from '../../../notification/application/ports';
+import { SendNotificationUsecase } from '../../../notification/application/usecases';
 
 @Injectable()
-export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
+export class NotifyTaskUsecase {
   private readonly logger = new Logger(NotifyTaskUsecase.name);
 
   constructor(
     private readonly taskRepository: TaskRepository,
-    private readonly notificationService: SendNotificationUsecasePort,
-    private readonly notionRepository: NotionTaskRepositoryPort,
+    private readonly notificationService: SendNotificationUsecase,
   ) {}
 
   async execute(): Promise<void> {
@@ -23,13 +21,9 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
     const tasks = await this.taskRepository.getAllTask();
 
     for (const task of tasks) {
-      await this.verifyVisibility(task);
-
       if (!task.shouldNotify()) {
         continue;
       }
-
-      await this.verifyVisibility(task);
 
       await this.sendNotification(task);
 
@@ -37,13 +31,6 @@ export class NotifyTaskUsecase implements NotifyTaskUseCasePort {
 
       await this.taskRepository.save(task);
     }
-  }
-
-  private async verifyVisibility(task: Task): Promise<void> {
-    if (!task.mustBeVisible()) return;
-    task.setVisible(true);
-    await this.taskRepository.save(task);
-    await this.notionRepository.updateVisibility(task);
   }
 
   private async sendNotification(task: Task): Promise<void> {

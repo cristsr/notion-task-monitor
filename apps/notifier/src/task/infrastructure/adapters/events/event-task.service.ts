@@ -5,15 +5,19 @@ import {
   NotionEventInput,
   NotionEventType,
 } from '../../../../shared/infrastructure/dtos';
-import { ManageTaskUseCasePort } from '../../../application/ports';
 import { Uuid } from '../../../../shared/domain/value-objects';
+import {
+  RemoveTaskUsecase,
+  SyncTaskUsecase,
+} from '../../../application/usecases';
 
 @Injectable()
-export class TaskEvent {
-  private readonly logger = new Logger(TaskEvent.name);
+export class EventTaskService {
+  private readonly logger = new Logger(EventTaskService.name);
   constructor(
     private readonly configService: ConfigService,
-    private readonly manageTaskUsecase: ManageTaskUseCasePort,
+    private readonly synctTaskUsecase: SyncTaskUsecase,
+    private readonly removeTasksUsecase: RemoveTaskUsecase,
   ) {}
 
   @OnEvent('notion.event')
@@ -24,16 +28,16 @@ export class TaskEvent {
 
     const eventHandlers = {
       [NotionEventType.PAGE_CREATED]: () =>
-        this.manageTaskUsecase.syncTask(Uuid.create(event.entity.id)),
+        this.synctTaskUsecase.execute(Uuid.create(event.entity.id)),
 
       [NotionEventType.PAGE_PROPERTIES_UPDATED]: () =>
-        this.manageTaskUsecase.syncTask(Uuid.create(event.entity.id)),
+        this.synctTaskUsecase.execute(Uuid.create(event.entity.id)),
 
       [NotionEventType.PAGE_UNDELETED]: () =>
-        this.manageTaskUsecase.syncTask(Uuid.create(event.entity.id)),
+        this.synctTaskUsecase.execute(Uuid.create(event.entity.id)),
 
       [NotionEventType.PAGE_DELETED]: () =>
-        this.manageTaskUsecase.removeTask(Uuid.create(event.entity.id)),
+        this.removeTasksUsecase.execute(Uuid.create(event.entity.id)),
     };
 
     const handler = eventHandlers[event.type];

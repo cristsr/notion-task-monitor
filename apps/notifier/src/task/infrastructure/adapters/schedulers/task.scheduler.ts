@@ -1,24 +1,24 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import {
-  NotifyTaskUseCasePort,
-  SyncTaskUsecasePort,
-} from '../../../application/ports';
+  NotifyTaskUsecase,
+  VisibilityTaskUsecase,
+} from '../../../application/usecases';
 
 @Injectable()
-export class TaskScheduler implements OnModuleInit {
+export class TaskScheduler {
   constructor(
-    private readonly syncTaskUsecase: SyncTaskUsecasePort,
-    private readonly notifyTaskUsecase: NotifyTaskUseCasePort,
+    private readonly notifyTaskUsecase: NotifyTaskUsecase,
+    private readonly visibilityTaskUsecase: VisibilityTaskUsecase,
   ) {}
-
-  async onModuleInit(): Promise<void> {
-    await this.syncTaskUsecase.execute();
-    await this.notifyTaskUsecase.execute();
-  }
 
   @Cron(CronExpression.EVERY_MINUTE)
   async notifyTasks(): Promise<void> {
     await this.notifyTaskUsecase.execute();
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async verifyTaskVisibility(): Promise<void> {
+    await this.visibilityTaskUsecase.execute();
   }
 }

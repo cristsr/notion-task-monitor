@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { NotionTaskRepositoryPort } from '../../../application/ports';
+import { TaskProviderPort } from '../../../application/ports';
 import { NotionClient } from '../../../../shared/infrastructure/config/notion';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -20,8 +20,8 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Uuid } from '../../../../shared/domain/value-objects';
 
 @Injectable()
-export class NotionTaskRepository implements NotionTaskRepositoryPort {
-  private readonly logger = new Logger(NotionTaskRepository.name);
+export class NotionTaskProvider implements TaskProviderPort {
+  private readonly logger = new Logger(NotionTaskProvider.name);
   constructor(
     private readonly notionClient: NotionClient,
     private readonly config: ConfigService,
@@ -49,7 +49,7 @@ export class NotionTaskRepository implements NotionTaskRepositoryPort {
     return NotionTaskMapper.toDomain(response as PageObjectResponse);
   }
 
-  async updateVisibility(task: Task): Promise<void> {
+  async update(task: Task): Promise<void> {
     await this.notionClient.pages.update({
       page_id: task.id.value,
       properties: {

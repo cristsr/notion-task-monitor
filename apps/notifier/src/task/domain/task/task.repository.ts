@@ -6,7 +6,6 @@ export abstract class TaskRepository {
   abstract save(task: Task): Promise<void>;
   abstract insert(task: Task): Promise<void>;
   abstract update(task: Task): Promise<void>;
-  abstract saveMany(tasks: Task[]): Promise<void>;
   abstract findById(id: Uuid): Promise<Task>;
   abstract remove(task: Task): Promise<void>;
 }
