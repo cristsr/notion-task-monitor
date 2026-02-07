@@ -1,11 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { NotificationInput } from '../../../application/dto';
-import { SendNotificationUsecasePort } from '../../../application/ports';
+import { SendNotificationUsecase } from '../../../application/usecases';
 
 @Controller('notifications')
 export class NotificationsController {
   constructor(
-    private readonly sendNotificationUseCase: SendNotificationUsecasePort,
+    private readonly sendNotificationUseCase: SendNotificationUsecase,
   ) {}
 
   @Post('notify')
