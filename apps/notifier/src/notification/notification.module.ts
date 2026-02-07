@@ -11,7 +11,7 @@ import {
   DiscordClientFactory,
 } from './infrastructure/config/discord';
 import { NotifierFactory } from './infrastructure/config/notifier';
-import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
+import { NOTIFIERS } from './application/ports';
 
 @Module({
   imports: [],
@@ -19,14 +19,11 @@ import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
   providers: [
     DiscordNotifierService,
     PushoverNotifierService,
+    SendNotificationUsecase,
     {
       provide: NOTIFIERS,
       useFactory: NotifierFactory.createNotifiers(),
       inject: [DiscordNotifierService, PushoverNotifierService],
-    },
-    {
-      provide: SendNotificationUsecasePort,
-      useClass: SendNotificationUsecase,
     },
     {
       provide: DiscordClient,
@@ -34,6 +31,6 @@ import { NOTIFIERS, SendNotificationUsecasePort } from './application/ports';
       inject: [ConfigService],
     },
   ],
-  exports: [SendNotificationUsecasePort],
+  exports: [SendNotificationUsecase],
 })
 export class NotificationModule {}
